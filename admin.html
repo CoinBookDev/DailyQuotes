@@ -2,19 +2,46 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <title>Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyQuotes Admin</title>
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
 </head>
 
 <body>
 
-<h1>JavaScript test</h1>
+<main class="container">
+  <h1>DailyQuotes Admin</h1>
 
-<button onclick="alert('DE KNOP WERKT!')">
-  Klik hier
-</button>
+  <section class="card">
+    <h2>Test</h2>
+
+    <button id="testButton">Test Supabase</button>
+
+    <p id="result">Nog niet getest.</p>
+  </section>
+</main>
 
 <script>
-alert("JAVASCRIPT WERKT!");
+
+alert("Stap 1: JavaScript werkt!");
+
+const result = document.getElementById("result");
+
+alert("Stap 2: Nu gaan we Supabase testen.");
+
+if (typeof supabase === "undefined") {
+
+  result.textContent = "❌ Supabase is NIET geladen.";
+
+} else {
+
+  result.textContent = "✅ Supabase is geladen!";
+
+}
+
 </script>
 
 </body>
