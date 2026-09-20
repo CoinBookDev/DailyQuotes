@@ -50,29 +50,28 @@
 <p id="saveMessage"></p>
 
 
-<!-- ACHTERGROND KIEZEN -->
 <hr>
 
-<h2>Background</h2>
+<h2>🌄 Achtergrond</h2>
 
-<p>Choose a background for the website:</p>
+<p>Kies een achtergrond:</p>
 
 <div class="background-picker">
 
   <button onclick="changeBackground('backgrounds/mountains.jpg')">
-    Mountains
+    🏔️ Bergen
   </button>
 
   <button onclick="changeBackground('backgrounds/forest.jpg')">
-    Forest
+    🌲 Bos
   </button>
 
   <button onclick="changeBackground('backgrounds/city.jpg')">
-    City
+    🌆 Stad
   </button>
 
-  <button onclick="changeBackground('backgrounds/simple.jpg')">
-    Simple
+  <button onclick="changeBackground('backgrounds/night.jpg')">
+    🌌 Nacht
   </button>
 
 </div>
@@ -407,6 +406,28 @@ function escapeHTML(value) {
 
 
 start();
+
+  function changeBackground(image) {
+
+  document.body.style.backgroundImage =
+    `linear-gradient(rgba(5, 12, 22, 0.35), rgba(5, 12, 22, 0.65)), url("${image}")`;
+
+  localStorage.setItem(
+    "dailyquotes-background",
+    image
+  );
+}
+
+
+const savedBackground =
+  localStorage.getItem("dailyquotes-background");
+
+if (savedBackground) {
+
+  document.body.style.backgroundImage =
+    `linear-gradient(rgba(5, 12, 22, 0.35), rgba(5, 12, 22, 0.65)), url("${savedBackground}")`;
+
+}
 
 </script>
 
