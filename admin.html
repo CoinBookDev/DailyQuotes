@@ -50,19 +50,18 @@
     <label>Author</label>
     <input id="author" type="text" placeholder="For example: Albert Einstein">
 
-    <label>Categorie</label>
+    <label>Category</label>
 
 <select id="category">
-  <option value="Liefde">❤️ Liefde</option>
-  <option value="Motivatie">💪 Motivatie</option>
-  <option value="Film & Series">🎬 Film & Series</option>
-  <option value="Muziek">🎵 Muziek</option>
-  <option value="Boeken">📚 Boeken</option>
-  <option value="Filosofie">🧠 Filosofie</option>
-  <option value="Sad / 3AM">🌧️ Sad / 3AM</option>
+  <option value="Liefde">❤️ Love</option>
+  <option value="Motivatie">💪 Motivation</option>
+  <option value="Film & Series">🎬 Movie</option>
+  <option value="Muziek">🎵 Music</option>
+  <option value="Boeken">📚 Books</option>
+  <option value="Filosofie">🧠 Filosophy</option>
+  <option value="Sad / 3AM">🌧️ Sad</option>
   <option value="Funny">😂 Funny</option>
-  <option value="Leven">🌟 Leven</option>
-  <option value="Karakterquotes">🎭 Karakterquotes</option>
+  <option value="Leven">🌟 Life</option>
 </select>
 
 <button id="saveButton">Save quote</button>
@@ -155,7 +154,7 @@ function showLogin() {
 
 loginButton.addEventListener("click", async () => {
 
-  loginMessage.textContent = "Inloggen...";
+  loginMessage.textContent = "Logging in...";
 
   const { data, error } = await db.auth.signInWithPassword({
 
@@ -167,7 +166,7 @@ loginButton.addEventListener("click", async () => {
 
   if (error) {
 
-    loginMessage.textContent = "Fout: " + error.message;
+    loginMessage.textContent = "Error: " + error.message;
 
     return;
 
@@ -213,14 +212,14 @@ saveButton.addEventListener("click", async () => {
   if (!selectedDate || !selectedQuote) {
 
     saveMessage.textContent =
-      "Vul een datum en quote in.";
+      "Enter a date and a quote.";
 
     return;
 
   }
 
 
-  saveMessage.textContent = "Opslaan...";
+  saveMessage.textContent = "Saving...";
 
 
   const { error } = await db
@@ -248,7 +247,7 @@ saveButton.addEventListener("click", async () => {
   }
 
 
-  saveMessage.textContent = "Quote opgeslagen!";
+  saveMessage.textContent = "Quote saved!";
 
   quote.value = "";
   author.value = "";
@@ -260,7 +259,7 @@ saveButton.addEventListener("click", async () => {
 
 async function loadQuotes() {
 
-  quoteList.textContent = "Quotes laden...";
+  quoteList.textContent = "Loading quotes...";
 
 
   const { data, error } = await db
@@ -272,7 +271,7 @@ async function loadQuotes() {
   if (error) {
 
     quoteList.textContent =
-      "Fout bij laden: " + error.message;
+      "Error with loading: " + error.message;
 
     return;
 
@@ -282,7 +281,7 @@ async function loadQuotes() {
   if (!data || data.length === 0) {
 
     quoteList.textContent =
-      "Er zijn nog geen quotes.";
+      "There are no quotes yet.";
 
     return;
 
@@ -309,7 +308,7 @@ async function loadQuotes() {
       </small>
       <br><br>
       <button onclick="deleteQuote('${item.quote_date}')">
-        Verwijderen
+        Delete
       </button>
       <hr>
     `;
@@ -324,7 +323,7 @@ async function loadQuotes() {
 
 async function deleteQuote(selectedDate) {
 
-  if (!confirm("Deze quote verwijderen?")) {
+  if (!confirm("Do you want to delete this quote?")) {
 
     return;
 
@@ -339,7 +338,7 @@ async function deleteQuote(selectedDate) {
 
   if (error) {
 
-    alert("Fout: " + error.message);
+    alert("Error: " + error.message);
 
     return;
 
