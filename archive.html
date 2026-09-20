@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DailyQuotes — Archief</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Quote Archief</h1>
+
+    <nav class="nav">
+      <a class="nav-button secondary" href="index.html">← Vandaag</a>
+    </nav>
+
+    <section class="card">
+      <h2>🔎 Filter op categorie</h2>
+      <div class="category-filter">
+        <select id="categoryFilter">
+          <option value="all">Alle categorieën</option>
+          <option value="Liefde">❤️ Liefde</option>
+          <option value="Motivatie">💪 Motivatie</option>
+          <option value="Film & Series">🎬 Film & Series</option>
+          <option value="Muziek">🎵 Muziek</option>
+          <option value="Boeken">📚 Boeken</option>
+          <option value="Filosofie">🧠 Filosofie</option>
+          <option value="Sad / 3AM">🌧️ Sad / 3AM</option>
+          <option value="Funny">😂 Funny</option>
+          <option value="Leven">🌟 Leven</option>
+          <option value="Karakterquotes">🎭 Karakterquotes</option>
+        </select>
+        <button id="resetButton">Reset</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>📖 Alle quotes</h2>
+      <div id="archiveList">Quotes laden...</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    let allQuotes = [];
+
+    const labels = {
+      "Liefde":"❤️ Liefde","Motivatie":"💪 Motivatie","Film & Series":"🎬 Film & Series",
+      "Muziek":"🎵 Muziek","Boeken":"📚 Boeken","Filosofie":"🧠 Filosofie",
+      "Sad / 3AM":"🌧️ Sad / 3AM","Funny":"😂 Funny","Leven":"🌟 Leven",
+      "Karakterquotes":"🎭 Karakterquotes"
+    };
+
+    function formatDate(value) {
+      return new Date(value+"T00:00:00").toLocaleDateString("nl-NL",{
+        day:"numeric",month:"long",year:"numeric"
+      });
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[c]));
+    }
+
+    function renderQuotes() {
+      const selected = document.getElementById("categoryFilter").value;
+      const filtered = selected === "all"
+        ? allQuotes
+        : allQuotes.filter(item => item.category === selected);
+      const list = document.getElementById("archiveList");
+
+      if (!filtered.length) {
+        list.innerHTML = "<p>Geen quotes gevonden in deze categorie.</p>";
+        return;
+      }
+
+      list.innerHTML = filtered.map(item => `
+        <article class="quote-row">
+          <strong>${formatDate(item.quote_date)}</strong>
+          <p class="quote-text">"${escapeHTML(item.quote)}"</p>
+          ${item.author ? `<small>— ${escapeHTML(item.author)}</small>` : ""}
+          ${item.category ? `<div><span class="category-badge">${escapeHTML(labels[item.category] || item.category)}</span></div>` : ""}
+        </article>
+      `).join("");
+    }
+
+    async function loadArchive() {
+      const list = document.getElementById("archiveList");
+      const { data, error } = await db.from("quotes")
+        .select("quote_date, quote, author, category")
+        .order("quote_date",{ascending:false});
+
+      if (error) {
+        list.textContent = "Fout bij laden: " + error.message;
+        return;
+      }
+
+      allQuotes = data || [];
+      renderQuotes();
+    }
+
+    document.getElementById("categoryFilter").addEventListener("change", renderQuotes);
+    document.getElementById("resetButton").addEventListener("click", () => {
+      document.getElementById("categoryFilter").value = "all";
+      renderQuotes();
+    });
+
+    const savedBackground = localStorage.getItem("dailyquotes-background");
+    if (savedBackground) {
+      document.body.style.backgroundImage =
+        `linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)), url("${savedBackground}")`;
+    }
+
+    loadArchive();
+  </script>
+</body>
+</html>

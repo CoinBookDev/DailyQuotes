@@ -9,11 +9,28 @@
 <body>
   <main class="container">
     <h1>DailyQuotes</h1>
+
+    <nav class="nav">
+      <a class="nav-button secondary" href="archive.html">📚 Archief</a>
+    </nav>
+
     <section class="quote-card">
       <p id="quote" class="quote">Laden...</p>
       <p id="author" class="author"></p>
       <p id="date" class="date"></p>
+      <span id="category" class="category-badge hidden"></span>
     </section>
+
+    <section class="card">
+      <h2>🌄 Achtergrond</h2>
+      <p>Kies een achtergrond. Je keuze wordt op dit apparaat onthouden.</p>
+      <div class="background-picker">
+        <button onclick="changeBackground('backgrounds/mountains.jpeg')">🏔️ Bergen</button>
+        <button onclick="changeBackground('backgrounds/forest.jpeg')">🌲 Bos</button>
+        <button onclick="changeBackground('backgrounds/city.jpeg')">🌆 Stad</button>
+      </div>
+    </section>
+
     <p id="message" class="message"></p>
   </main>
 
@@ -22,14 +39,32 @@
   <script>
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+    function changeBackground(image) {
+      document.body.style.backgroundImage =
+        `linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)), url("${image}")`;
+      localStorage.setItem("dailyquotes-background", image);
+    }
+
+    const savedBackground = localStorage.getItem("dailyquotes-background");
+    if (savedBackground) {
+      document.body.style.backgroundImage =
+        `linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)), url("${savedBackground}")`;
+    }
+
+    const labels = {
+      "Liefde":"❤️ Liefde","Motivatie":"💪 Motivatie","Film & Series":"🎬 Film & Series",
+      "Muziek":"🎵 Muziek","Boeken":"📚 Boeken","Filosofie":"🧠 Filosofie",
+      "Sad / 3AM":"🌧️ Sad / 3AM","Funny":"😂 Funny","Leven":"🌟 Leven",
+      "Karakterquotes":"🎭 Karakterquotes"
+    };
+
     async function loadToday() {
       const today = new Date().toLocaleDateString("en-CA");
       document.getElementById("date").textContent =
-        new Date().toLocaleDateString("nl-NL", {day:"numeric", month:"long", year:"numeric"});
+        new Date().toLocaleDateString("nl-NL",{day:"numeric",month:"long",year:"numeric"});
 
-      const { data, error } = await db
-        .from("quotes")
-        .select("quote, author")
+      const { data, error } = await db.from("quotes")
+        .select("quote, author, category")
         .eq("quote_date", today)
         .maybeSingle();
 
@@ -47,6 +82,12 @@
 
       document.getElementById("quote").textContent = `"${data.quote}"`;
       document.getElementById("author").textContent = data.author ? `— ${data.author}` : "";
+
+      if (data.category) {
+        const category = document.getElementById("category");
+        category.textContent = labels[data.category] || data.category;
+        category.classList.remove("hidden");
+      }
     }
 
     loadToday();

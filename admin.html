@@ -17,6 +17,11 @@
 
   <h1>DailyQuotes Admin</h1>
 
+  <nav class="nav">
+    <a class="nav-button secondary" href="index.html">🏠 Site</a>
+    <a class="nav-button secondary" href="archive.html">📚 Archief</a>
+  </nav>
+
   <section id="loginBox" class="card">
 
     <h2>Log in</h2>
@@ -85,9 +90,6 @@
     🌆 Stad
   </button>
 
-<button onclick="document.body.style.backgroundImage = 'url(backgrounds/mountains.jpeg)'">
-  🏔️ Bergen
-</button>
 </div>
 
 
@@ -263,7 +265,7 @@ async function loadQuotes() {
 
   const { data, error } = await db
     .from("quotes")
-    .select("quote_date, quote, author")
+    .select("quote_date, quote, author, category")
     .order("quote_date", { ascending: true });
 
 
@@ -303,7 +305,7 @@ async function loadQuotes() {
       "${escapeHTML(item.quote)}"
       <br>
       <small>
-        ${item.author ? "— " + escapeHTML(item.author) : ""}
+        ${item.author ? "— " + escapeHTML(item.author) : ""}<br>${item.category ? `<span class="category-badge">${escapeHTML(getCategoryLabel(item.category))}</span>` : ""}
       </small>
       <br><br>
       <button onclick="deleteQuote('${item.quote_date}')">
@@ -380,6 +382,16 @@ async function start() {
 
 }
 
+
+function getCategoryLabel(category) {
+  const labels = {
+    "Liefde":"❤️ Liefde","Motivatie":"💪 Motivatie","Film & Series":"🎬 Film & Series",
+    "Muziek":"🎵 Muziek","Boeken":"📚 Boeken","Filosofie":"🧠 Filosofie",
+    "Sad / 3AM":"🌧️ Sad / 3AM","Funny":"😂 Funny","Leven":"🌟 Leven",
+    "Karakterquotes":"🎭 Karakterquotes"
+  };
+  return labels[category] || category;
+}
 
 function formatDate(value) {
 
