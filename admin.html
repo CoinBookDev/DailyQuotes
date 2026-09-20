@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>DailyQuotes Admin</title>
 
   <link rel="stylesheet" href="style.css">
@@ -17,132 +18,294 @@
 
   <h1>DailyQuotes Admin</h1>
 
+
+  <!-- LOGIN -->
+
   <section id="loginBox" class="card">
 
     <h2>Log in</h2>
 
-    <input id="email" type="email" placeholder="E-mail">
+    <input
+      id="email"
+      type="email"
+      placeholder="E-mail"
+    >
 
-    <input id="password" type="password" placeholder="Password">
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+    >
 
-    <button id="loginButton">Log in</button>
+    <button id="loginButton">
+      Log in
+    </button>
 
     <p id="loginMessage"></p>
 
   </section>
 
 
+  <!-- ADMIN -->
+
   <section id="adminBox" class="card hidden">
 
-    <h2 id="formTitle">Add quote</h2>
+    <!-- TITLE + CATEGORY -->
 
-    <label>Date</label>
-    <input id="date" type="date">
+    <div class="form-header">
 
-    <label>Quote</label>
-    <textarea id="quote" placeholder="Write your quote here..."></textarea>
+      <h2 id="formTitle">
+        Add quote
+      </h2>
 
-    <label>Author</label>
-    <input id="author" type="text" placeholder="For example: Albert Einstein">
+      <select id="category">
 
-    <label>Categorie</label>
+        <option value="Love">
+          ❤️ Love
+        </option>
 
-<select id="category">
-  <option value="Liefde">❤️ Liefde</option>
-  <option value="Motivatie">💪 Motivatie</option>
-  <option value="Film & Series">🎬 Film & Series</option>
-  <option value="Muziek">🎵 Muziek</option>
-  <option value="Boeken">📚 Boeken</option>
-  <option value="Filosofie">🧠 Filosofie</option>
-  <option value="Sad / 3AM">🌧️ Sad / 3AM</option>
-  <option value="Funny">😂 Funny</option>
-  <option value="Leven">🌟 Leven</option>
-  <option value="Karakterquotes">🎭 Karakterquotes</option>
-</select>
+        <option value="Motivation">
+          💪 Motivation
+        </option>
 
-<button id="saveButton">Save quote</button>
-<button id="cancelEditButton" class="hidden">Cancel edit</button>
+        <option value="Film & Series">
+          🎬 Film & Series
+        </option>
 
-<p id="saveMessage"></p>
+        <option value="Music">
+          🎵 Music
+        </option>
+
+        <option value="Books">
+          📚 Books
+        </option>
+
+        <option value="Philosophy">
+          🧠 Philosophy
+        </option>
+
+        <option value="Sad / 3AM">
+          🌧️ Sad / 3AM
+        </option>
+
+        <option value="Funny">
+          😂 Funny
+        </option>
+
+        <option value="Life">
+          🌟 Life
+        </option>
+
+        <option value="Character Quotes">
+          🎭 Character Quotes
+        </option>
+
+      </select>
+
+    </div>
 
 
-<hr>
+    <!-- DATE -->
 
-<h2>🌄 Achtergrond</h2>
+    <label for="date">
+      Date
+    </label>
 
-<p>Kies een achtergrond:</p>
-
-<div class="background-picker">
-
-  <button id="mountainsButton">
-    🏔️ Bergen
-  </button>
-
-  <button id="forestButton">
-    🌲 Bos
-  </button>
-
-  <button id="cityButton">
-    🌆 Stad
-  </button>
-
-</div>
+    <input
+      id="date"
+      type="date"
+    >
 
 
-<hr>
+    <!-- QUOTE -->
 
-<h2>Planned quotes</h2>
+    <label for="quote">
+      Quote
+    </label>
+
+    <textarea
+      id="quote"
+      placeholder="Write your quote here..."
+    ></textarea>
+
+
+    <!-- AUTHOR -->
+
+    <label for="author">
+      Author
+    </label>
+
+    <input
+      id="author"
+      type="text"
+      placeholder="For example: Albert Einstein"
+    >
+
+
+    <!-- BUTTONS -->
+
+    <div class="form-buttons">
+
+      <button id="saveButton">
+        Save quote
+      </button>
+
+      <button
+        id="cancelEditButton"
+        class="hidden"
+        type="button"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+    <p id="saveMessage"></p>
+
+
+    <hr>
+
+
+    <!-- BACKGROUNDS -->
+
+    <h2>
+      🌄 Background
+    </h2>
+
+    <p>
+      Choose a background:
+    </p>
+
+    <div class="background-picker">
+
+      <button
+        onclick="changeBackground('backgrounds/mountains.jpg')"
+      >
+        🏔️ Mountains
+      </button>
+
+      <button
+        onclick="changeBackground('backgrounds/forest.jpg')"
+      >
+        🌲 Forest
+      </button>
+
+      <button
+        onclick="changeBackground('backgrounds/city.jpg')"
+      >
+        🌆 City
+      </button>
+
+    </div>
+
+
+    <hr>
+
+
+    <!-- QUOTES -->
+
+    <h2>
+      Planned quotes
+    </h2>
 
     <div id="quoteList">
       Loading...
     </div>
 
-    <button id="logoutButton">Log out</button>
+
+    <!-- LOGOUT -->
+
+    <button id="logoutButton">
+      Log out
+    </button>
 
   </section>
 
 </main>
 
 
+
 <script>
+
+
+/* =========================
+   SUPABASE
+========================= */
 
 const db = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
 
-const category = document.getElementById("category");
-const loginBox = document.getElementById("loginBox");
-const adminBox = document.getElementById("adminBox");
 
-const email = document.getElementById("email");
-const password = document.getElementById("password");
 
-const loginButton = document.getElementById("loginButton");
-const logoutButton = document.getElementById("logoutButton");
+/* =========================
+   ELEMENTS
+========================= */
 
-const loginMessage = document.getElementById("loginMessage");
+const loginBox =
+  document.getElementById("loginBox");
 
-const date = document.getElementById("date");
-const quote = document.getElementById("quote");
-const author = document.getElementById("author");
+const adminBox =
+  document.getElementById("adminBox");
 
-const saveButton = document.getElementById("saveButton");
-const cancelEditButton = document.getElementById("cancelEditButton");
-const saveMessage = document.getElementById("saveMessage");
+const email =
+  document.getElementById("email");
 
-const quoteList = document.getElementById("quoteList");
+const password =
+  document.getElementById("password");
 
-const mountainsButton = document.getElementById("mountainsButton");
-const forestButton = document.getElementById("forestButton");
-const cityButton = document.getElementById("cityButton");
+const loginButton =
+  document.getElementById("loginButton");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const date =
+  document.getElementById("date");
+
+const quote =
+  document.getElementById("quote");
+
+const author =
+  document.getElementById("author");
+
+const category =
+  document.getElementById("category");
+
+const saveButton =
+  document.getElementById("saveButton");
+
+const cancelEditButton =
+  document.getElementById("cancelEditButton");
+
+const saveMessage =
+  document.getElementById("saveMessage");
+
+const quoteList =
+  document.getElementById("quoteList");
+
+const formTitle =
+  document.getElementById("formTitle");
+
+
+/* The date of the quote currently being edited */
 
 let editingDate = null;
 
 
+
+/* =========================
+   SHOW / HIDE
+========================= */
+
 function showAdmin() {
 
   loginBox.classList.add("hidden");
+
   adminBox.classList.remove("hidden");
 
 }
@@ -151,103 +314,167 @@ function showAdmin() {
 function showLogin() {
 
   loginBox.classList.remove("hidden");
+
   adminBox.classList.add("hidden");
 
 }
 
 
-loginButton.addEventListener("click", async () => {
 
-  loginMessage.textContent = "Inloggen...";
+/* =========================
+   LOGIN
+========================= */
 
-  const { data, error } = await db.auth.signInWithPassword({
-
-    email: email.value.trim(),
-    password: password.value
-
-  });
-
-
-  if (error) {
-
-    loginMessage.textContent = "Fout: " + error.message;
-
-    return;
-
-  }
-
-
-  if (!data.session) {
+loginButton.addEventListener(
+  "click",
+  async () => {
 
     loginMessage.textContent =
-      "Login gelukt, maar er is geen sessie ontvangen.";
+      "Logging in...";
 
-    return;
+
+    const { data, error } =
+      await db.auth.signInWithPassword({
+
+        email:
+          email.value.trim(),
+
+        password:
+          password.value
+
+      });
+
+
+    if (error) {
+
+      loginMessage.textContent =
+        "Error: " + error.message;
+
+      return;
+
+    }
+
+
+    if (!data.session) {
+
+      loginMessage.textContent =
+        "Login succeeded, but no session was received.";
+
+      return;
+
+    }
+
+
+    loginMessage.textContent = "";
+
+    showAdmin();
+
+    await loadQuotes();
 
   }
+);
 
 
-  loginMessage.textContent = "";
 
-  showAdmin();
+/* =========================
+   LOGOUT
+========================= */
 
-  await loadQuotes();
+logoutButton.addEventListener(
+  "click",
+  async () => {
 
-});
+    await db.auth.signOut();
 
+    resetForm();
 
-logoutButton.addEventListener("click", async () => {
-
-  await db.auth.signOut();
-
-  showLogin();
-
-});
-
-
-saveButton.addEventListener("click", async () => {
-
-  const selectedDate = date.value;
-  const selectedQuote = quote.value.trim();
-  const selectedAuthor = author.value.trim();
-  const selectedCategory = category.value;
-
-
-  if (!selectedDate || !selectedQuote) {
-
-    saveMessage.textContent =
-      "Vul een datum en quote in.";
-
-    return;
+    showLogin();
 
   }
+);
 
 
-  saveMessage.textContent = "Opslaan...";
-  saveButton.disabled = true;
+
+/* =========================
+   SAVE / UPDATE QUOTE
+========================= */
+
+saveButton.addEventListener(
+  "click",
+  async () => {
+
+    const selectedDate =
+      date.value;
+
+    const selectedQuote =
+      quote.value.trim();
+
+    const selectedAuthor =
+      author.value.trim();
+
+    const selectedCategory =
+      category.value;
 
 
-  try {
+    if (
+      !selectedDate ||
+      !selectedQuote
+    ) {
 
-    const { error } = await db
-      .from("quotes")
-      .upsert(
-        {
-          quote_date: selectedDate,
-          quote: selectedQuote,
-          author: selectedAuthor || null,
-          category: selectedCategory
-        },
-        {
-          onConflict: "quote_date"
-        }
-      );
+      saveMessage.textContent =
+        "Please enter a date and quote.";
+
+      return;
+
+    }
+
+
+    if (editingDate) {
+
+      saveMessage.textContent =
+        "Updating...";
+
+    } else {
+
+      saveMessage.textContent =
+        "Saving...";
+
+    }
+
+
+    const { error } =
+      await db
+        .from("quotes")
+        .upsert(
+
+          {
+
+            quote_date:
+              selectedDate,
+
+            quote:
+              selectedQuote,
+
+            author:
+              selectedAuthor || null,
+
+            category:
+              selectedCategory
+
+          },
+
+          {
+            onConflict:
+              "quote_date"
+          }
+
+        );
 
 
     if (error) {
 
       saveMessage.textContent =
-        "Fout: " + error.message;
+        "Error: " + error.message;
 
       return;
 
@@ -255,21 +482,30 @@ saveButton.addEventListener("click", async () => {
 
 
     /*
-     * When editing and the date was changed,
-     * remove the old row after saving the new one.
-     */
-    if (editingDate && editingDate !== selectedDate) {
+      If the date was changed while editing,
+      delete the old date.
+    */
 
-      const { error: deleteError } = await db
-        .from("quotes")
-        .delete()
-        .eq("quote_date", editingDate);
+    if (
+      editingDate &&
+      editingDate !== selectedDate
+    ) {
+
+      const { error: deleteError } =
+        await db
+          .from("quotes")
+          .delete()
+          .eq(
+            "quote_date",
+            editingDate
+          );
+
 
       if (deleteError) {
 
         saveMessage.textContent =
-          "Quote opgeslagen, maar de oude datum kon niet worden verwijderd: " +
-          deleteError.message;
+          "Quote updated, but the old date could not be removed: "
+          + deleteError.message;
 
         return;
 
@@ -278,56 +514,210 @@ saveButton.addEventListener("click", async () => {
     }
 
 
-    saveMessage.textContent =
-      editingDate ? "Quote aangepast!" : "Quote opgeslagen!";
+    if (editingDate) {
 
-    resetForm();
+      saveMessage.textContent =
+        "Quote updated!";
+
+    } else {
+
+      saveMessage.textContent =
+        "Quote saved!";
+
+    }
+
+
+    resetForm(false);
 
     await loadQuotes();
 
-  } finally {
+  }
+);
 
-    saveButton.disabled = false;
+
+
+/* =========================
+   CANCEL EDIT
+========================= */
+
+cancelEditButton.addEventListener(
+  "click",
+  () => {
+
+    resetForm();
 
   }
-
-});
-
-
-cancelEditButton.addEventListener("click", () => {
-
-  resetForm();
-
-  saveMessage.textContent = "";
-
-});
+);
 
 
-async function loadQuotes() {
 
-  quoteList.textContent = "Quotes laden...";
+/* =========================
+   EDIT QUOTE
+========================= */
 
+async function editQuote(
+  selectedDate
+) {
 
-  const { data, error } = await db
-    .from("quotes")
-    .select("quote_date, quote, author, category")
-    .order("quote_date", { ascending: true });
+  const { data, error } =
+    await db
+      .from("quotes")
+      .select(
+        "quote_date, quote, author, category"
+      )
+      .eq(
+        "quote_date",
+        selectedDate
+      )
+      .single();
 
 
   if (error) {
 
-    quoteList.textContent =
-      "Fout bij laden: " + error.message;
+    alert(
+      "Error: " +
+      error.message
+    );
 
     return;
 
   }
 
 
-  if (!data || data.length === 0) {
+  editingDate =
+    selectedDate;
+
+
+  formTitle.textContent =
+    "Edit quote";
+
+
+  saveButton.textContent =
+    "Update quote";
+
+
+  cancelEditButton
+    .classList
+    .remove("hidden");
+
+
+  date.value =
+    data.quote_date;
+
+
+  quote.value =
+    data.quote || "";
+
+
+  author.value =
+    data.author || "";
+
+
+  category.value =
+    data.category || "Life";
+
+
+  window.scrollTo({
+
+    top: 0,
+
+    behavior: "smooth"
+
+  });
+
+}
+
+
+
+/* =========================
+   DELETE QUOTE
+========================= */
+
+async function deleteQuote(
+  selectedDate
+) {
+
+  if (
+    !confirm(
+      "Delete this quote?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  const { error } =
+    await db
+      .from("quotes")
+      .delete()
+      .eq(
+        "quote_date",
+        selectedDate
+      );
+
+
+  if (error) {
+
+    alert(
+      "Error: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  await loadQuotes();
+
+}
+
+
+
+/* =========================
+   LOAD QUOTES
+========================= */
+
+async function loadQuotes() {
+
+  quoteList.textContent =
+    "Loading quotes...";
+
+
+  const { data, error } =
+    await db
+      .from("quotes")
+      .select(
+        "quote_date, quote, author, category"
+      )
+      .order(
+        "quote_date",
+        {
+          ascending: true
+        }
+      );
+
+
+  if (error) {
 
     quoteList.textContent =
-      "Er zijn nog geen quotes.";
+      "Error loading quotes: " +
+      error.message;
+
+    return;
+
+  }
+
+
+  if (
+    !data ||
+    data.length === 0
+  ) {
+
+    quoteList.textContent =
+      "There are no quotes yet.";
 
     return;
 
@@ -337,173 +727,233 @@ async function loadQuotes() {
   quoteList.innerHTML = "";
 
 
-  data.forEach(item => {
+  data.forEach(
+    item => {
 
-    const row = document.createElement("div");
-
-    row.className = "quote-row";
-
-
-    row.innerHTML = `
-      <strong>${formatDate(item.quote_date)}</strong>
-      <br>
-      "${escapeHTML(item.quote)}"
-      <br>
-      <small>
-        ${item.author ? "— " + escapeHTML(item.author) : ""}
-      </small>
-      <br>
-      <small>
-        ${item.category ? "Categorie: " + escapeHTML(item.category) : ""}
-      </small>
-      <br><br>
-      <button class="edit-button">
-        Bewerken
-      </button>
-      <button class="delete-button">
-        Verwijderen
-      </button>
-      <hr>
-    `;
+      const row =
+        document.createElement(
+          "div"
+        );
 
 
-    row.querySelector(".edit-button").addEventListener("click", () => {
-      editQuote(item.quote_date);
-    });
+      row.className =
+        "quote-row";
 
 
-    row.querySelector(".delete-button").addEventListener("click", () => {
-      deleteQuote(item.quote_date);
-    });
+      row.innerHTML = `
+
+        <strong>
+          ${formatDate(
+            item.quote_date
+          )}
+        </strong>
+
+        <br>
+
+        "${escapeHTML(
+          item.quote
+        )}"
+
+        <br>
+
+        <small>
+
+          ${
+            item.author
+              ? "— " +
+                escapeHTML(
+                  item.author
+                )
+              : ""
+          }
+
+        </small>
+
+        <br>
+
+        <small>
+
+          ${
+            item.category
+              ? escapeHTML(
+                  item.category
+                )
+              : ""
+          }
+
+        </small>
+
+        <br><br>
+
+        <button
+          class="edit-button"
+          onclick="editQuote('${item.quote_date}')"
+        >
+          Edit
+        </button>
+
+        <button
+          class="delete-button"
+          onclick="deleteQuote('${item.quote_date}')"
+          style="
+            background: #dc2626;
+            color: white;
+            border: 1px solid #b91c1c;
+          "
+        >
+          Delete
+        </button>
+
+        <hr>
+
+      `;
 
 
-    quoteList.appendChild(row);
+      quoteList.appendChild(
+        row
+      );
 
-  });
-
-}
-
-
-async function editQuote(selectedDate) {
-
-  const { data, error } = await db
-    .from("quotes")
-    .select("quote_date, quote, author, category")
-    .eq("quote_date", selectedDate)
-    .maybeSingle();
-
-
-  if (error) {
-
-    alert("Fout: " + error.message);
-
-    return;
-
-  }
-
-
-  if (!data) {
-
-    alert("Quote niet gevonden.");
-
-    return;
-
-  }
-
-
-  editingDate = data.quote_date;
-
-  date.value = data.quote_date;
-  quote.value = data.quote || "";
-  author.value = data.author || "";
-
-  /*
-   * Keep the selected category if it exists.
-   * Older quotes without a category fall back to Leven.
-   */
-  category.value = data.category || "Leven";
-
-
-  document.getElementById("formTitle").textContent =
-    "Edit quote";
-
-  saveButton.textContent =
-    "Update quote";
-
-  cancelEditButton.classList.remove("hidden");
-
-  saveMessage.textContent =
-    "Je bewerkt de quote van " + formatDate(data.quote_date) + ".";
-
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
+    }
+  );
 
 }
 
 
-async function deleteQuote(selectedDate) {
 
-  if (!confirm("Deze quote verwijderen?")) {
+/* =========================
+   RESET FORM
+========================= */
 
-    return;
-
-  }
-
-
-  const { error } = await db
-    .from("quotes")
-    .delete()
-    .eq("quote_date", selectedDate);
-
-
-  if (error) {
-
-    alert("Fout: " + error.message);
-
-    return;
-
-  }
-
-
-  if (editingDate === selectedDate) {
-
-    resetForm();
-
-  }
-
-
-  await loadQuotes();
-
-}
-
-
-function resetForm() {
+function resetForm(
+  clearMessage = true
+) {
 
   editingDate = null;
 
-  date.value = "";
-  quote.value = "";
-  author.value = "";
-  category.value = "Leven";
 
-  document.getElementById("formTitle").textContent =
+  formTitle.textContent =
     "Add quote";
+
 
   saveButton.textContent =
     "Save quote";
 
-  cancelEditButton.classList.add("hidden");
+
+  cancelEditButton
+    .classList
+    .add("hidden");
+
+
+  date.value = "";
+
+  quote.value = "";
+
+  author.value = "";
+
+  category.value =
+    "Life";
+
+
+  if (clearMessage) {
+
+    saveMessage.textContent =
+      "";
+
+  }
 
 }
 
 
-function changeBackground(image) {
+
+/* =========================
+   FORMAT DATE
+========================= */
+
+function formatDate(
+  value
+) {
+
+  return new Date(
+    value + "T00:00:00"
+  ).toLocaleDateString(
+    "en-US",
+    {
+
+      day:
+        "numeric",
+
+      month:
+        "long",
+
+      year:
+        "numeric"
+
+    }
+  );
+
+}
+
+
+
+/* =========================
+   SECURITY
+========================= */
+
+function escapeHTML(
+  value
+) {
+
+  return String(
+    value
+  ).replace(
+
+    /[&<>"']/g,
+
+    function(character) {
+
+      return {
+
+        "&":
+          "&amp;",
+
+        "<":
+          "&lt;",
+
+        ">":
+          "&gt;",
+
+        '"':
+          "&quot;",
+
+        "'":
+          "&#039;"
+
+      }[character];
+
+    }
+
+  );
+
+}
+
+
+
+/* =========================
+   BACKGROUND
+========================= */
+
+function changeBackground(
+  image
+) {
 
   document.body.style.backgroundImage =
-    `linear-gradient(rgba(5, 12, 22, 0.35), rgba(5, 12, 22, 0.65)), url("${image}")`;
+
+    `linear-gradient(
+      rgba(5, 12, 22, 0.35),
+      rgba(5, 12, 22, 0.65)
+    ),
+    url("${image}")`;
+
 
   localStorage.setItem(
     "dailyquotes-background",
@@ -513,31 +963,31 @@ function changeBackground(image) {
 }
 
 
-mountainsButton.addEventListener("click", () => {
-
-  changeBackground("backgrounds/mountains.jpg");
-
-});
-
-
-forestButton.addEventListener("click", () => {
-
-  changeBackground("backgrounds/forest.jpg");
-
-});
+const savedBackground =
+  localStorage.getItem(
+    "dailyquotes-background"
+  );
 
 
-cityButton.addEventListener("click", () => {
+if (savedBackground) {
 
-  changeBackground("backgrounds/city.jpg");
+  document.body.style.backgroundImage =
 
-});
+    `linear-gradient(
+      rgba(5, 12, 22, 0.35),
+      rgba(5, 12, 22, 0.65)
+    ),
+    url("${savedBackground}")`;
 
+}
+
+
+
+/* =========================
+   START
+========================= */
 
 async function start() {
-
-  loadSavedBackground();
-
 
   const { data, error } =
     await db.auth.getSession();
@@ -546,7 +996,7 @@ async function start() {
   if (error) {
 
     loginMessage.textContent =
-      "Fout bij controleren van login: " +
+      "Error checking login: " +
       error.message;
 
     return;
@@ -565,62 +1015,6 @@ async function start() {
     showLogin();
 
   }
-
-}
-
-
-function loadSavedBackground() {
-
-  const savedBackground =
-    localStorage.getItem("dailyquotes-background");
-
-
-  if (savedBackground) {
-
-    document.body.style.backgroundImage =
-      `linear-gradient(rgba(5, 12, 22, 0.35), rgba(5, 12, 22, 0.65)), url("${savedBackground}")`;
-
-  }
-
-}
-
-
-function formatDate(value) {
-
-  return new Date(
-    value + "T00:00:00"
-  ).toLocaleDateString(
-    "nl-NL",
-    {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }
-  );
-
-}
-
-
-function escapeHTML(value) {
-
-  return String(value).replace(
-    /[&<>\"']/g,
-
-    function(character) {
-
-      return {
-
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-
-      }[character];
-
-    }
-
-  );
 
 }
 
