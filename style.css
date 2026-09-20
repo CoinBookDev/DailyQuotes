@@ -3,7 +3,7 @@
 }
 
 :root {
-  --background-image: url("backgrounds/mountains.jpeg");
+  --background-image: url("backgrounds/mountains.jpg");
   --card: rgba(10, 20, 35, 0.72);
   --card-border: rgba(255, 255, 255, 0.16);
   --text: #ffffff;
