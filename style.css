@@ -359,3 +359,21 @@ hr {
     flex-direction: column;
   }
 }
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.form-header select {
+  width: auto;
+  min-width: 190px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
