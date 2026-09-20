@@ -1,41 +1,258 @@
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --background-image: url("backgrounds/mountains.jpg");
+  --card: rgba(10, 20, 35, 0.72);
+  --card-border: rgba(255, 255, 255, 0.16);
+  --text: #ffffff;
+  --muted: #b9c1cc;
+  --accent: #f4d3a3;
+}
+
 body {
-  margin: 0; min-height: 100vh; padding: 30px 18px;
-  display: flex; justify-content: center; align-items: center;
-  font-family: Arial, sans-serif; background: #111; color: #fff;
+  margin: 0;
+  min-height: 100vh;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: var(--text);
+
+  background:
+    linear-gradient(
+      rgba(5, 12, 22, 0.35),
+      rgba(5, 12, 22, 0.65)
+    ),
+    var(--background-image);
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
-.container { width: 100%; max-width: 760px; }
-h1 { text-align: center; font-size: 42px; margin-bottom: 32px; }
-.quote-card, .panel {
-  background: #1e1e1e; border-radius: 20px; padding: 32px;
-  box-shadow: 0 12px 35px rgba(0,0,0,.35);
+
+/* Donkere laag over de achtergrond */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: rgba(5, 12, 22, 0.15);
+
+  pointer-events: none;
+  z-index: -1;
 }
-.quote { font-size: 30px; line-height: 1.45; font-style: italic; }
-.author { color: #aaa; font-size: 18px; }
-.date { color: #777; }
-.message { color: #aaa; margin-top: 15px; }
-input, textarea {
-  width: 100%; padding: 12px; margin: 8px 0 18px;
-  border: 1px solid #444; border-radius: 9px;
-  background: #2b2b2b; color: white; font-size: 16px;
+
+
+/* Hoofdcontainer */
+
+.container {
+  width: min(1200px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 50px 0;
 }
-textarea { min-height: 130px; resize: vertical; }
+
+
+/* Titels */
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  margin: 0 0 35px;
+  font-family: Georgia, serif;
+  letter-spacing: -2px;
+}
+
+h2 {
+  font-family: Georgia, serif;
+  font-size: 1.6rem;
+}
+
+
+/* Cards */
+
+.card {
+  background: var(--card);
+
+  border: 1px solid var(--card-border);
+
+  border-radius: 22px;
+
+  padding: 30px;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.35);
+
+  margin-bottom: 25px;
+}
+
+
+/* Inputs */
+
+input,
+textarea {
+  width: 100%;
+
+  padding: 15px 17px;
+
+  margin: 8px 0 18px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(255,255,255,0.2);
+
+  background: rgba(255,255,255,0.05);
+
+  color: white;
+
+  font-size: 1rem;
+
+  outline: none;
+
+  transition: 0.2s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+
+  background: rgba(255,255,255,0.08);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+
+/* Labels */
+
+label {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 0.9rem;
+
+  margin-top: 8px;
+}
+
+
+/* Buttons */
+
 button {
-  border: 0; border-radius: 9px; padding: 12px 18px;
-  background: white; color: #111; font-size: 16px; cursor: pointer;
+  border: none;
+
+  border-radius: 12px;
+
+  padding: 14px 22px;
+
+  font-size: 1rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  background: var(--accent);
+
+  color: #18202a;
+
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    opacity 0.15s;
 }
-button:hover { opacity: .85; }
-.secondary { background: #333; color: white; }
-.danger { background: #6b2222; color: white; }
-.hidden { display: none; }
-.topbar { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+
+button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.25);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+
+/* Quote lijst */
+
 .quote-row {
-  display: flex; justify-content: space-between; gap: 15px;
-  padding: 15px 0; border-top: 1px solid #333;
+  padding: 18px;
+
+  margin: 12px 0;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.05);
+
+  border: 1px solid rgba(255,255,255,0.1);
 }
-.quote-row small { color: #999; }
-@media (max-width: 600px) {
-  h1 { font-size: 34px; }
-  .quote { font-size: 23px; }
-  .quote-row { flex-direction: column; }
+
+.quote-row strong {
+  color: var(--accent);
+}
+
+.quote-row small {
+  color: var(--muted);
+}
+
+
+/* Verwijderknop */
+
+.quote-row button {
+  background: rgba(255, 70, 70, 0.15);
+
+  color: #ff8c8c;
+
+  padding: 8px 12px;
+
+  font-size: 0.85rem;
+}
+
+
+/* Scheidingslijn */
+
+hr {
+  border: none;
+
+  border-top: 1px solid rgba(255,255,255,0.12);
+
+  margin: 25px 0;
+}
+
+
+/* Verborgen elementen */
+
+.hidden {
+  display: none;
+}
+
+
+/* Mobiel */
+
+@media (max-width: 700px) {
+
+  .container {
+    width: min(100% - 24px, 600px);
+    padding: 25px 0;
+  }
+
+  .card {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
 }
