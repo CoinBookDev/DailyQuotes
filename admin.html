@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DailyQuotes Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>DailyQuotes Admin</h1>
+
+    <section id="loginBox" class="panel">
+      <h2>Inloggen</h2>
+      <input id="email" type="email" placeholder="E-mail">
+      <input id="password" type="password" placeholder="Wachtwoord">
+      <button id="loginButton">Inloggen</button>
+      <p id="loginMessage" class="message"></p>
+    </section>
+
+    <section id="adminBox" class="panel hidden">
+      <div class="topbar">
+        <h2>Quotes beheren</h2>
+        <button id="logoutButton" class="secondary">Uitloggen</button>
+      </div>
+
+      <label for="date">Datum</label>
+      <input id="date" type="date">
+
+      <label for="quote">Quote</label>
+      <textarea id="quote" placeholder="Typ de quote..."></textarea>
+
+      <label for="author">Auteur</label>
+      <input id="author" type="text" placeholder="Auteur (optioneel)">
+
+      <button id="saveButton">Opslaan</button>
+      <p id="saveMessage" class="message"></p>
+
+      <h2>Geplande quotes</h2>
+      <div id="quoteList">Laden...</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const $ = id => document.getElementById(id);
+
+    async function showSession() {
+      const { data } = await db.auth.getSession();
+      const loggedIn = !!data.session;
+      $("loginBox").classList.toggle("hidden", loggedIn);
+      $("adminBox").classList.toggle("hidden", !loggedIn);
+      if (loggedIn) loadQuotes();
+    }
+
+    $("loginButton").onclick = async () => {
+      $("loginMessage").textContent = "";
+      const { error } = await db.auth.signInWithPassword({
+        email: $("email").value.trim(),
+        password: $("password").value
+      });
+      if (error) {
+        $("loginMessage").textContent = error.message;
+        return;
+      }
+      await showSession();
+    };
+
+    $("logoutButton").onclick = async () => {
+      await db.auth.signOut();
+      await showSession();
+    };
+
+    $("saveButton").onclick = async () => {
+      const quote_date = $("date").value;
+      const quote = $("quote").value.trim();
+      const author = $("author").value.trim();
+
+      if (!quote_date || !quote) {
+        $("saveMessage").textContent = "Vul een datum en quote in.";
+        return;
+      }
+
+      const { error } = await db.from("quotes").upsert(
+        { quote_date, quote, author: author || null },
+        { onConflict: "quote_date" }
+      );
+
+      $("saveMessage").textContent = error ? error.message : "Quote opgeslagen!";
+      if (!error) {
+        $("quote").value = "";
+        $("author").value = "";
+        await loadQuotes();
+      }
+    };
+
+    async function loadQuotes() {
+      const { data, error } = await db
+        .from("quotes")
+        .select("quote_date, quote, author")
+        .order("quote_date", { ascending: true });
+
+      if (error) {
+        $("quoteList").textContent = error.message;
+        return;
+      }
+
+      if (!data.length) {
+        $("quoteList").textContent = "Nog geen quotes.";
+        return;
+      }
+
+      $("quoteList").innerHTML = data.map(q => `
+        <div class="quote-row">
+          <div>
+            <strong>${escapeHtml(formatDate(q.quote_date))}</strong>
+            <div>"${escapeHtml(q.quote)}"</div>
+            <small>${q.author ? "— " + escapeHtml(q.author) : ""}</small>
+          </div>
+          <button class="danger" onclick="deleteQuote('${q.quote_date}')">Verwijderen</button>
+        </div>
+      `).join("");
+    }
+
+    async function deleteQuote(date) {
+      if (!confirm("Deze quote verwijderen?")) return;
+      const { error } = await db.from("quotes").delete().eq("quote_date", date);
+      if (error) {
+        alert(error.message);
+      } else {
+        loadQuotes();
+      }
+    }
+
+    function formatDate(value) {
+      return new Date(value + "T00:00:00").toLocaleDateString("nl-NL", {
+        day: "numeric", month: "long", year: "numeric"
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, c => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+      }[c]));
+    }
+
+    db.auth.onAuthStateChange(() => showSession());
+    showSession();
+  </script>
+</body>
+</html>
