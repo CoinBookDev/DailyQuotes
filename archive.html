@@ -1,42 +1,56 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DailyQuotes — Archief</title>
+  <title>Quote Archive — DailyQuotes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="container">
-    <h1>Quote Archief</h1>
-
-    <nav class="nav">
-      <a class="nav-button secondary" href="index.html">← Vandaag</a>
+    <nav class="top-nav">
+      <a href="index.html">Today</a>
+      <a href="archive.html" class="active">Archive</a>
+      <a href="admin.html">Admin</a>
     </nav>
 
-    <section class="card">
-      <h2>🔎 Filter op categorie</h2>
-      <div class="category-filter">
-        <select id="categoryFilter">
-          <option value="all">Alle categorieën</option>
-          <option value="Liefde">❤️ Liefde</option>
-          <option value="Motivatie">💪 Motivatie</option>
-          <option value="Film & Series">🎬 Film & Series</option>
-          <option value="Muziek">🎵 Muziek</option>
-          <option value="Boeken">📚 Boeken</option>
-          <option value="Filosofie">🧠 Filosofie</option>
-          <option value="Sad / 3AM">🌧️ Sad / 3AM</option>
-          <option value="Funny">😂 Funny</option>
-          <option value="Leven">🌟 Leven</option>
-          <option value="Karakterquotes">🎭 Karakterquotes</option>
-        </select>
-        <button id="resetButton">Reset</button>
-      </div>
+    <header class="hero">
+      <p class="eyebrow">THE ARCHIVE</p>
+      <h1>Quote Archive</h1>
+      <p class="subtitle">Look back at previous daily quotes.</p>
+    </header>
+
+    <section class="card archive-controls">
+      <label for="categoryFilter">Filter by category</label>
+      <select id="categoryFilter">
+        <option value="">All categories</option>
+        <option value="Love">❤️ Love</option>
+        <option value="Motivation">💪 Motivation</option>
+        <option value="Film & Series">🎬 Film & Series</option>
+        <option value="Music">🎵 Music</option>
+        <option value="Books">📚 Books</option>
+        <option value="Philosophy">🧠 Philosophy</option>
+        <option value="Sad / 3AM">🌧️ Sad / 3AM</option>
+        <option value="Funny">😂 Funny</option>
+        <option value="Life">🌟 Life</option>
+        <option value="Character Quotes">🎭 Character Quotes</option>
+      </select>
+      <button id="resetButton" class="secondary-button">Reset filter</button>
     </section>
 
-    <section class="card">
-      <h2>📖 Alle quotes</h2>
-      <div id="archiveList">Quotes laden...</div>
+    <section id="archiveList" class="archive-list">
+      Loading...
+    </section>
+
+    <p id="message" class="message"></p>
+
+    <section class="background-section">
+      <p>Background</p>
+      <div class="background-picker">
+        <button onclick="changeBackground('backgrounds/mountains.jpeg')">🏔️ Mountains</button>
+        <button onclick="changeBackground('backgrounds/forest.jpeg')">🌲 Forest</button>
+        <button onclick="changeBackground('backgrounds/city.jpeg')">🌆 City</button>
+      </div>
     </section>
   </main>
 
@@ -46,55 +60,73 @@
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     let allQuotes = [];
 
-    const labels = {
-      "Liefde":"❤️ Liefde","Motivatie":"💪 Motivatie","Film & Series":"🎬 Film & Series",
-      "Muziek":"🎵 Muziek","Boeken":"📚 Boeken","Filosofie":"🧠 Filosofie",
-      "Sad / 3AM":"🌧️ Sad / 3AM","Funny":"😂 Funny","Leven":"🌟 Leven",
-      "Karakterquotes":"🎭 Karakterquotes"
-    };
+    function getToday() {
+      return new Date().toLocaleDateString("en-CA");
+    }
 
     function formatDate(value) {
-      return new Date(value+"T00:00:00").toLocaleDateString("nl-NL",{
-        day:"numeric",month:"long",year:"numeric"
+      return new Date(value + "T00:00:00").toLocaleDateString("en-US", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
       });
     }
 
     function escapeHTML(value) {
-      return String(value).replace(/[&<>"']/g, c => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[c]));
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[character]));
     }
 
+    function changeBackground(image) {
+      document.body.style.backgroundImage =
+        `linear-gradient(rgba(5, 12, 22, 0.35), rgba(5, 12, 22, 0.65)), url("${image}")`;
+      localStorage.setItem("dailyquotes-background", image);
+    }
+
+    const savedBackground = localStorage.getItem("dailyquotes-background");
+    if (savedBackground) changeBackground(savedBackground);
+
     function renderQuotes() {
-      const selected = document.getElementById("categoryFilter").value;
-      const filtered = selected === "all"
-        ? allQuotes
-        : allQuotes.filter(item => item.category === selected);
       const list = document.getElementById("archiveList");
+      const filter = document.getElementById("categoryFilter").value;
+
+      const filtered = allQuotes.filter(item =>
+        !filter || item.category === filter
+      );
 
       if (!filtered.length) {
-        list.innerHTML = "<p>Geen quotes gevonden in deze categorie.</p>";
+        list.innerHTML = `<div class="card empty-state">No quotes found for this category.</div>`;
         return;
       }
 
       list.innerHTML = filtered.map(item => `
-        <article class="quote-row">
-          <strong>${formatDate(item.quote_date)}</strong>
-          <p class="quote-text">"${escapeHTML(item.quote)}"</p>
-          ${item.author ? `<small>— ${escapeHTML(item.author)}</small>` : ""}
-          ${item.category ? `<div><span class="category-badge">${escapeHTML(labels[item.category] || item.category)}</span></div>` : ""}
+        <article class="quote-card archive-card">
+          <div class="archive-date">${formatDate(item.quote_date)}</div>
+          <span class="category-badge">${escapeHTML(item.category || "Life")}</span>
+          <p class="quote">"${escapeHTML(item.quote)}"</p>
+          <p class="author">${item.author ? "— " + escapeHTML(item.author) : ""}</p>
         </article>
       `).join("");
     }
 
     async function loadArchive() {
       const list = document.getElementById("archiveList");
-      const { data, error } = await db.from("quotes")
+      const today = getToday();
+
+      const { data, error } = await db
+        .from("quotes")
         .select("quote_date, quote, author, category")
-        .order("quote_date",{ascending:false});
+        .lte("quote_date", today)
+        .order("quote_date", { ascending: false });
 
       if (error) {
-        list.textContent = "Fout bij laden: " + error.message;
+        list.textContent = "Error loading the archive: " + error.message;
         return;
       }
 
@@ -104,15 +136,9 @@
 
     document.getElementById("categoryFilter").addEventListener("change", renderQuotes);
     document.getElementById("resetButton").addEventListener("click", () => {
-      document.getElementById("categoryFilter").value = "all";
+      document.getElementById("categoryFilter").value = "";
       renderQuotes();
     });
-
-    const savedBackground = localStorage.getItem("dailyquotes-background");
-    if (savedBackground) {
-      document.body.style.backgroundImage =
-        `linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)), url("${savedBackground}")`;
-    }
 
     loadArchive();
   </script>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,30 +8,35 @@
 </head>
 <body>
   <main class="container">
-    <h1>DailyQuotes</h1>
-
-    <nav class="nav">
-      <a class="nav-button secondary" href="archive.html">📚 Archief</a>
+    <nav class="top-nav">
+      <a href="index.html">Today</a>
+      <a href="archive.html">Archive</a>
+      <a href="admin.html">Admin</a>
     </nav>
 
+    <header class="hero">
+      <p class="eyebrow">YOUR DAILY QUOTE</p>
+      <h1>DailyQuotes</h1>
+      <p class="subtitle">A little thought for every day.</p>
+    </header>
+
     <section class="quote-card">
-      <p id="quote" class="quote">Laden...</p>
+      <span id="category" class="category-badge"></span>
+      <p id="quote" class="quote">Loading...</p>
       <p id="author" class="author"></p>
       <p id="date" class="date"></p>
-      <span id="category" class="category-badge hidden"></span>
-    </section>
-
-    <section class="card">
-      <h2>🌄 Achtergrond</h2>
-      <p>Kies een achtergrond. Je keuze wordt op dit apparaat onthouden.</p>
-      <div class="background-picker">
-        <button onclick="changeBackground('backgrounds/mountains.jpeg')">🏔️ Bergen</button>
-        <button onclick="changeBackground('backgrounds/forest.jpeg')">🌲 Bos</button>
-        <button onclick="changeBackground('backgrounds/city.jpeg')">🌆 Stad</button>
-      </div>
     </section>
 
     <p id="message" class="message"></p>
+
+    <section class="background-section">
+      <p>Background</p>
+      <div class="background-picker">
+        <button onclick="changeBackground('backgrounds/mountains.jpeg')">🏔️ Mountains</button>
+        <button onclick="changeBackground('backgrounds/forest.jpeg')">🌲 Forest</button>
+        <button onclick="changeBackground('backgrounds/city.jpeg')">🌆 City</button>
+      </div>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -39,55 +44,54 @@
   <script>
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+    function getToday() {
+      return new Date().toLocaleDateString("en-CA");
+    }
+
     function changeBackground(image) {
       document.body.style.backgroundImage =
-        `linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)), url("${image}")`;
+        `linear-gradient(rgba(5, 12, 22, 0.35), rgba(5, 12, 22, 0.65)), url("${image}")`;
       localStorage.setItem("dailyquotes-background", image);
     }
 
     const savedBackground = localStorage.getItem("dailyquotes-background");
-    if (savedBackground) {
-      document.body.style.backgroundImage =
-        `linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)), url("${savedBackground}")`;
-    }
-
-    const labels = {
-      "Liefde":"❤️ Liefde","Motivatie":"💪 Motivatie","Film & Series":"🎬 Film & Series",
-      "Muziek":"🎵 Muziek","Boeken":"📚 Boeken","Filosofie":"🧠 Filosofie",
-      "Sad / 3AM":"🌧️ Sad / 3AM","Funny":"😂 Funny","Leven":"🌟 Leven",
-      "Karakterquotes":"🎭 Karakterquotes"
-    };
+    if (savedBackground) changeBackground(savedBackground);
 
     async function loadToday() {
-      const today = new Date().toLocaleDateString("en-CA");
-      document.getElementById("date").textContent =
-        new Date().toLocaleDateString("nl-NL",{day:"numeric",month:"long",year:"numeric"});
+      const today = getToday();
 
-      const { data, error } = await db.from("quotes")
+      document.getElementById("date").textContent =
+        new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+
+      const { data, error } = await db
+        .from("quotes")
         .select("quote, author, category")
         .eq("quote_date", today)
         .maybeSingle();
 
       if (error) {
-        document.getElementById("quote").textContent = "Er ging iets mis.";
+        document.getElementById("quote").textContent = "Something went wrong.";
         document.getElementById("message").textContent = error.message;
         return;
       }
 
       if (!data) {
-        document.getElementById("quote").textContent = "Er is vandaag nog geen quote.";
+        document.getElementById("quote").textContent = "There is no quote for today yet.";
         document.getElementById("author").textContent = "";
+        document.getElementById("category").textContent = "";
         return;
       }
 
       document.getElementById("quote").textContent = `"${data.quote}"`;
-      document.getElementById("author").textContent = data.author ? `— ${data.author}` : "";
-
-      if (data.category) {
-        const category = document.getElementById("category");
-        category.textContent = labels[data.category] || data.category;
-        category.classList.remove("hidden");
-      }
+      document.getElementById("author").textContent =
+        data.author ? `— ${data.author}` : "";
+      document.getElementById("category").textContent =
+        data.category || "Life";
     }
 
     loadToday();
