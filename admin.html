@@ -45,6 +45,21 @@
     <label>Author</label>
     <input id="author" type="text" placeholder="For example: Albert Einstein">
 
+    <label>Categorie</label>
+
+<select id="category">
+  <option value="Liefde">❤️ Liefde</option>
+  <option value="Motivatie">💪 Motivatie</option>
+  <option value="Film & Series">🎬 Film & Series</option>
+  <option value="Muziek">🎵 Muziek</option>
+  <option value="Boeken">📚 Boeken</option>
+  <option value="Filosofie">🧠 Filosofie</option>
+  <option value="Sad / 3AM">🌧️ Sad / 3AM</option>
+  <option value="Funny">😂 Funny</option>
+  <option value="Leven">🌟 Leven</option>
+  <option value="Karakterquotes">🎭 Karakterquotes</option>
+</select>
+
 <button id="saveButton">Save quote</button>
 
 <p id="saveMessage"></p>
@@ -98,7 +113,7 @@ const db = supabase.createClient(
   SUPABASE_PUBLISHABLE_KEY
 );
 
-
+const category = document.getElementById("category");
 const loginBox = document.getElementById("loginBox");
 const adminBox = document.getElementById("adminBox");
 
@@ -190,6 +205,7 @@ saveButton.addEventListener("click", async () => {
   const selectedDate = date.value;
   const selectedQuote = quote.value.trim();
   const selectedAuthor = author.value.trim();
+  const selectedCategory = category.value;
 
 
   if (!selectedDate || !selectedQuote) {
@@ -206,17 +222,18 @@ saveButton.addEventListener("click", async () => {
 
 
   const { error } = await db
-    .from("quotes")
-    .upsert(
-      {
-        quote_date: selectedDate,
-        quote: selectedQuote,
-        author: selectedAuthor || null
-      },
-      {
-        onConflict: "quote_date"
-      }
-    );
+  .from("quotes")
+  .upsert(
+    {
+      quote_date: selectedDate,
+      quote: selectedQuote,
+      author: selectedAuthor || null,
+      category: selectedCategory
+    },
+    {
+      onConflict: "quote_date"
+    }
+  );
 
 
   if (error) {
