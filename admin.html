@@ -19,13 +19,13 @@
 
   <section id="loginBox" class="card">
 
-    <h2>Inloggen</h2>
+    <h2>Log in</h2>
 
     <input id="email" type="email" placeholder="E-mail">
 
-    <input id="password" type="password" placeholder="Wachtwoord">
+    <input id="password" type="password" placeholder="Password">
 
-    <button id="loginButton">Inloggen</button>
+    <button id="loginButton">Log in</button>
 
     <p id="loginMessage"></p>
 
@@ -34,30 +34,59 @@
 
   <section id="adminBox" class="card hidden">
 
-    <h2>Quote toevoegen</h2>
+    <h2>Add quote</h2>
 
-    <label>Datum</label>
+    <label>Date</label>
     <input id="date" type="date">
 
     <label>Quote</label>
-    <textarea id="quote" placeholder="Schrijf hier je quote..."></textarea>
+    <textarea id="quote" placeholder="Write your quote here..."></textarea>
 
-    <label>Auteur</label>
-    <input id="author" type="text" placeholder="Bijvoorbeeld: Albert Einstein">
+    <label>Author</label>
+    <input id="author" type="text" placeholder="For example: Albert Einstein">
 
-    <button id="saveButton">Quote opslaan</button>
+<button id="saveButton">Save quote</button>
 
-    <p id="saveMessage"></p>
+<p id="saveMessage"></p>
 
-    <hr>
 
-    <h2>Geplande quotes</h2>
+<!-- ACHTERGROND KIEZEN -->
+<hr>
+
+<h2>Background</h2>
+
+<p>Choose a background for the website:</p>
+
+<div class="background-picker">
+
+  <button onclick="changeBackground('backgrounds/mountains.jpg')">
+    Mountains
+  </button>
+
+  <button onclick="changeBackground('backgrounds/forest.jpg')">
+    Forest
+  </button>
+
+  <button onclick="changeBackground('backgrounds/city.jpg')">
+    City
+  </button>
+
+  <button onclick="changeBackground('backgrounds/simple.jpg')">
+    Simple
+  </button>
+
+</div>
+
+
+<hr>
+
+<h2>Planned quotes</h2>
 
     <div id="quoteList">
       Laden...
     </div>
 
-    <button id="logoutButton">Uitloggen</button>
+    <button id="logoutButton">Log out</button>
 
   </section>
 
