@@ -1,153 +1,376 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyQuotes Admin</title>
   <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main class="container">
-    <h1>DailyQuotes Admin</h1>
-
-    <section id="loginBox" class="panel">
-      <h2>Inloggen</h2>
-      <input id="email" type="email" placeholder="E-mail">
-      <input id="password" type="password" placeholder="Wachtwoord">
-      <button id="loginButton">Inloggen</button>
-      <p id="loginMessage" class="message"></p>
-    </section>
-
-    <section id="adminBox" class="panel hidden">
-      <div class="topbar">
-        <h2>Quotes beheren</h2>
-        <button id="logoutButton" class="secondary">Uitloggen</button>
-      </div>
-
-      <label for="date">Datum</label>
-      <input id="date" type="date">
-
-      <label for="quote">Quote</label>
-      <textarea id="quote" placeholder="Typ de quote..."></textarea>
-
-      <label for="author">Auteur</label>
-      <input id="author" type="text" placeholder="Auteur (optioneel)">
-
-      <button id="saveButton">Opslaan</button>
-      <p id="saveMessage" class="message"></p>
-
-      <h2>Geplande quotes</h2>
-      <div id="quoteList">Laden...</div>
-    </section>
-  </main>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script>
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+</head>
 
-    const $ = id => document.getElementById(id);
+<body>
 
-    async function showSession() {
-      const { data } = await db.auth.getSession();
-      const loggedIn = !!data.session;
-      $("loginBox").classList.toggle("hidden", loggedIn);
-      $("adminBox").classList.toggle("hidden", !loggedIn);
-      if (loggedIn) loadQuotes();
-    }
+  <main class="container">
 
-    $("loginButton").onclick = async () => {
-      $("loginMessage").textContent = "";
-      const { error } = await db.auth.signInWithPassword({
-        email: $("email").value.trim(),
-        password: $("password").value
-      });
-      if (error) {
-        $("loginMessage").textContent = error.message;
-        return;
+    <h1>DailyQuotes Admin</h1>
+
+    <!-- LOGIN -->
+    <section id="loginBox" class="card">
+      <h2>Inloggen</h2>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="E-mail"
+      >
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Wachtwoord"
+      >
+
+      <button id="loginButton">
+        Inloggen
+      </button>
+
+      <p id="loginMessage"></p>
+    </section>
+
+
+    <!-- ADMIN -->
+    <section id="adminBox" class="card hidden">
+
+      <h2>Quote toevoegen</h2>
+
+      <label>Datum</label>
+      <input id="date" type="date">
+
+      <label>Quote</label>
+      <textarea
+        id="quote"
+        placeholder="Schrijf hier je quote..."
+      ></textarea>
+
+      <label>Auteur</label>
+      <input
+        id="author"
+        type="text"
+        placeholder="Bijvoorbeeld: Albert Einstein"
+      >
+
+      <button id="saveButton">
+        Quote opslaan
+      </button>
+
+      <p id="saveMessage"></p>
+
+      <hr>
+
+      <h2>Geplande quotes</h2>
+
+      <div id="quoteList">
+        Laden...
+      </div>
+
+      <button id="logoutButton">
+        Uitloggen
+      </button>
+
+    </section>
+
+  </main>
+
+
+<script>
+
+const db = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+const loginBox = document.getElementById("loginBox");
+const adminBox = document.getElementById("adminBox");
+
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+
+const loginButton = document.getElementById("loginButton");
+const logoutButton = document.getElementById("logoutButton");
+
+const loginMessage = document.getElementById("loginMessage");
+
+const date = document.getElementById("date");
+const quote = document.getElementById("quote");
+const author = document.getElementById("author");
+
+const saveButton = document.getElementById("saveButton");
+const saveMessage = document.getElementById("saveMessage");
+
+const quoteList = document.getElementById("quoteList");
+
+
+// -------------------------
+// UI
+// -------------------------
+
+function showAdmin() {
+  loginBox.classList.add("hidden");
+  adminBox.classList.remove("hidden");
+}
+
+function showLogin() {
+  loginBox.classList.remove("hidden");
+  adminBox.classList.add("hidden");
+}
+
+
+// -------------------------
+// LOGIN
+// -------------------------
+
+loginButton.addEventListener("click", async () => {
+
+  loginMessage.textContent = "Inloggen...";
+
+  const { data, error } = await db.auth.signInWithPassword({
+    email: email.value.trim(),
+    password: password.value
+  });
+
+  if (error) {
+    loginMessage.textContent = "Fout: " + error.message;
+    return;
+  }
+
+  if (!data.session) {
+    loginMessage.textContent = "Login gelukt, maar er is geen sessie ontvangen.";
+    return;
+  }
+
+  loginMessage.textContent = "";
+
+  showAdmin();
+
+  await loadQuotes();
+
+});
+
+
+// -------------------------
+// LOGOUT
+// -------------------------
+
+logoutButton.addEventListener("click", async () => {
+
+  await db.auth.signOut();
+
+  showLogin();
+
+});
+
+
+// -------------------------
+// QUOTE OPSLAAN
+// -------------------------
+
+saveButton.addEventListener("click", async () => {
+
+  const selectedDate = date.value;
+  const selectedQuote = quote.value.trim();
+  const selectedAuthor = author.value.trim();
+
+  if (!selectedDate || !selectedQuote) {
+    saveMessage.textContent = "Vul een datum en quote in.";
+    return;
+  }
+
+  saveMessage.textContent = "Opslaan...";
+
+  const { error } = await db
+    .from("quotes")
+    .upsert(
+      {
+        quote_date: selectedDate,
+        quote: selectedQuote,
+        author: selectedAuthor || null
+      },
+      {
+        onConflict: "quote_date"
       }
-      await showSession();
-    };
+    );
 
-    $("logoutButton").onclick = async () => {
-      await db.auth.signOut();
-      await showSession();
-    };
+  if (error) {
+    saveMessage.textContent = "Fout: " + error.message;
+    return;
+  }
 
-    $("saveButton").onclick = async () => {
-      const quote_date = $("date").value;
-      const quote = $("quote").value.trim();
-      const author = $("author").value.trim();
+  saveMessage.textContent = "Quote opgeslagen!";
 
-      if (!quote_date || !quote) {
-        $("saveMessage").textContent = "Vul een datum en quote in.";
-        return;
-      }
+  quote.value = "";
+  author.value = "";
 
-      const { error } = await db.from("quotes").upsert(
-        { quote_date, quote, author: author || null },
-        { onConflict: "quote_date" }
-      );
+  await loadQuotes();
 
-      $("saveMessage").textContent = error ? error.message : "Quote opgeslagen!";
-      if (!error) {
-        $("quote").value = "";
-        $("author").value = "";
-        await loadQuotes();
-      }
-    };
+});
 
-    async function loadQuotes() {
-      const { data, error } = await db
-        .from("quotes")
-        .select("quote_date, quote, author")
-        .order("quote_date", { ascending: true });
 
-      if (error) {
-        $("quoteList").textContent = error.message;
-        return;
-      }
+// -------------------------
+// QUOTES LADEN
+// -------------------------
 
-      if (!data.length) {
-        $("quoteList").textContent = "Nog geen quotes.";
-        return;
-      }
+async function loadQuotes() {
 
-      $("quoteList").innerHTML = data.map(q => `
-        <div class="quote-row">
-          <div>
-            <strong>${escapeHtml(formatDate(q.quote_date))}</strong>
-            <div>"${escapeHtml(q.quote)}"</div>
-            <small>${q.author ? "— " + escapeHtml(q.author) : ""}</small>
-          </div>
-          <button class="danger" onclick="deleteQuote('${q.quote_date}')">Verwijderen</button>
-        </div>
-      `).join("");
-    }
+  quoteList.textContent = "Quotes laden...";
 
-    async function deleteQuote(date) {
-      if (!confirm("Deze quote verwijderen?")) return;
-      const { error } = await db.from("quotes").delete().eq("quote_date", date);
-      if (error) {
-        alert(error.message);
-      } else {
-        loadQuotes();
-      }
-    }
+  const { data, error } = await db
+    .from("quotes")
+    .select("quote_date, quote, author")
+    .order("quote_date", {
+      ascending: true
+    });
 
-    function formatDate(value) {
-      return new Date(value + "T00:00:00").toLocaleDateString("nl-NL", {
-        day: "numeric", month: "long", year: "numeric"
-      });
-    }
+  if (error) {
 
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, c => ({
-        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
-      }[c]));
-    }
+    quoteList.textContent =
+      "Fout bij laden: " + error.message;
 
-    showSession();
-  </script>
+    return;
+  }
+
+  if (!data || data.length === 0) {
+
+    quoteList.textContent =
+      "Er zijn nog geen quotes.";
+
+    return;
+  }
+
+  quoteList.innerHTML = "";
+
+  data.forEach(item => {
+
+    const row = document.createElement("div");
+
+    row.className = "quote-row";
+
+    row.innerHTML = `
+      <strong>${formatDate(item.quote_date)}</strong>
+      <br>
+      "${escapeHTML(item.quote)}"
+      <br>
+      <small>
+        ${item.author ? "— " + escapeHTML(item.author) : ""}
+      </small>
+      <br><br>
+      <button onclick="deleteQuote('${item.quote_date}')">
+        Verwijderen
+      </button>
+      <hr>
+    `;
+
+    quoteList.appendChild(row);
+
+  });
+
+}
+
+
+// -------------------------
+// QUOTE VERWIJDEREN
+// -------------------------
+
+async function deleteQuote(selectedDate) {
+
+  if (!confirm("Deze quote verwijderen?")) {
+    return;
+  }
+
+  const { error } = await db
+    .from("quotes")
+    .delete()
+    .eq("quote_date", selectedDate);
+
+  if (error) {
+
+    alert("Fout: " + error.message);
+
+    return;
+  }
+
+  await loadQuotes();
+
+}
+
+
+// -------------------------
+// START
+// -------------------------
+
+async function start() {
+
+  const { data, error } = await db.auth.getSession();
+
+  if (error) {
+
+    loginMessage.textContent =
+      "Fout bij controleren van login: " + error.message;
+
+    return;
+  }
+
+  if (data.session) {
+
+    showAdmin();
+
+    await loadQuotes();
+
+  } else {
+
+    showLogin();
+
+  }
+
+}
+
+
+// -------------------------
+// HELPERS
+// -------------------------
+
+function formatDate(value) {
+
+  return new Date(value + "T00:00:00")
+    .toLocaleDateString("nl-NL", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+}
+
+
+function escapeHTML(value) {
+
+  return String(value).replace(/[&<>"']/g, function(character) {
+
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[character];
+
+  });
+
+}
+
+
+start();
+
+</script>
+
 </body>
 </html>
