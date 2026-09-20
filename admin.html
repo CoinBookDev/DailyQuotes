@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyQuotes Admin Test</title>
+  <title>DailyQuotes Admin</title>
+
+  <link rel="stylesheet" href="style.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
@@ -11,39 +13,371 @@
 
 <body>
 
-<h1>Supabase test</h1>
+<main class="container">
 
-<p id="result">Test wordt uitgevoerd...</p>
+  <h1>DailyQuotes Admin</h1>
+
+  <section id="loginBox" class="card">
+
+    <h2>Inloggen</h2>
+
+    <input id="email" type="email" placeholder="E-mail">
+
+    <input id="password" type="password" placeholder="Wachtwoord">
+
+    <button id="loginButton">Inloggen</button>
+
+    <p id="loginMessage"></p>
+
+  </section>
+
+
+  <section id="adminBox" class="card hidden">
+
+    <h2>Quote toevoegen</h2>
+
+    <label>Datum</label>
+    <input id="date" type="date">
+
+    <label>Quote</label>
+    <textarea id="quote" placeholder="Schrijf hier je quote..."></textarea>
+
+    <label>Auteur</label>
+    <input id="author" type="text" placeholder="Bijvoorbeeld: Albert Einstein">
+
+    <button id="saveButton">Quote opslaan</button>
+
+    <p id="saveMessage"></p>
+
+    <hr>
+
+    <h2>Geplande quotes</h2>
+
+    <div id="quoteList">
+      Laden...
+    </div>
+
+    <button id="logoutButton">Uitloggen</button>
+
+  </section>
+
+</main>
+
 
 <script>
 
-const result = document.getElementById("result");
+const db = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
 
-alert("1. Supabase is geladen");
 
-if (typeof SUPABASE_URL === "undefined") {
+const loginBox = document.getElementById("loginBox");
+const adminBox = document.getElementById("adminBox");
 
-    result.textContent = "❌ SUPABASE_URL bestaat niet";
-    alert("2. SUPABASE_URL ontbreekt");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
 
-} else {
+const loginButton = document.getElementById("loginButton");
+const logoutButton = document.getElementById("logoutButton");
 
-    result.textContent = "✅ SUPABASE_URL gevonden";
-    alert("2. SUPABASE_URL is gevonden");
+const loginMessage = document.getElementById("loginMessage");
+
+const date = document.getElementById("date");
+const quote = document.getElementById("quote");
+const author = document.getElementById("author");
+
+const saveButton = document.getElementById("saveButton");
+const saveMessage = document.getElementById("saveMessage");
+
+const quoteList = document.getElementById("quoteList");
+
+
+function showAdmin() {
+
+  loginBox.classList.add("hidden");
+  adminBox.classList.remove("hidden");
 
 }
 
-if (typeof SUPABASE_PUBLISHABLE_KEY === "undefined") {
 
-    result.textContent += " | ❌ Key ontbreekt";
-    alert("3. PUBLISHABLE KEY ontbreekt");
+function showLogin() {
 
-} else {
-
-    result.textContent += " | ✅ Key gevonden";
-    alert("3. PUBLISHABLE KEY is gevonden");
+  loginBox.classList.remove("hidden");
+  adminBox.classList.add("hidden");
 
 }
+
+
+loginButton.addEventListener("click", async () => {
+
+  loginMessage.textContent = "Inloggen...";
+
+  const { data, error } = await db.auth.signInWithPassword({
+
+    email: email.value.trim(),
+    password: password.value
+
+  });
+
+
+  if (error) {
+
+    loginMessage.textContent = "Fout: " + error.message;
+
+    return;
+
+  }
+
+
+  if (!data.session) {
+
+    loginMessage.textContent =
+      "Login gelukt, maar er is geen sessie ontvangen.";
+
+    return;
+
+  }
+
+
+  loginMessage.textContent = "";
+
+  showAdmin();
+
+  await loadQuotes();
+
+});
+
+
+logoutButton.addEventListener("click", async () => {
+
+  await db.auth.signOut();
+
+  showLogin();
+
+});
+
+
+saveButton.addEventListener("click", async () => {
+
+  const selectedDate = date.value;
+  const selectedQuote = quote.value.trim();
+  const selectedAuthor = author.value.trim();
+
+
+  if (!selectedDate || !selectedQuote) {
+
+    saveMessage.textContent =
+      "Vul een datum en quote in.";
+
+    return;
+
+  }
+
+
+  saveMessage.textContent = "Opslaan...";
+
+
+  const { error } = await db
+    .from("quotes")
+    .upsert(
+      {
+        quote_date: selectedDate,
+        quote: selectedQuote,
+        author: selectedAuthor || null
+      },
+      {
+        onConflict: "quote_date"
+      }
+    );
+
+
+  if (error) {
+
+    saveMessage.textContent =
+      "Fout: " + error.message;
+
+    return;
+
+  }
+
+
+  saveMessage.textContent = "Quote opgeslagen!";
+
+  quote.value = "";
+  author.value = "";
+
+  await loadQuotes();
+
+});
+
+
+async function loadQuotes() {
+
+  quoteList.textContent = "Quotes laden...";
+
+
+  const { data, error } = await db
+    .from("quotes")
+    .select("quote_date, quote, author")
+    .order("quote_date", { ascending: true });
+
+
+  if (error) {
+
+    quoteList.textContent =
+      "Fout bij laden: " + error.message;
+
+    return;
+
+  }
+
+
+  if (!data || data.length === 0) {
+
+    quoteList.textContent =
+      "Er zijn nog geen quotes.";
+
+    return;
+
+  }
+
+
+  quoteList.innerHTML = "";
+
+
+  data.forEach(item => {
+
+    const row = document.createElement("div");
+
+    row.className = "quote-row";
+
+
+    row.innerHTML = `
+      <strong>${formatDate(item.quote_date)}</strong>
+      <br>
+      "${escapeHTML(item.quote)}"
+      <br>
+      <small>
+        ${item.author ? "— " + escapeHTML(item.author) : ""}
+      </small>
+      <br><br>
+      <button onclick="deleteQuote('${item.quote_date}')">
+        Verwijderen
+      </button>
+      <hr>
+    `;
+
+
+    quoteList.appendChild(row);
+
+  });
+
+}
+
+
+async function deleteQuote(selectedDate) {
+
+  if (!confirm("Deze quote verwijderen?")) {
+
+    return;
+
+  }
+
+
+  const { error } = await db
+    .from("quotes")
+    .delete()
+    .eq("quote_date", selectedDate);
+
+
+  if (error) {
+
+    alert("Fout: " + error.message);
+
+    return;
+
+  }
+
+
+  await loadQuotes();
+
+}
+
+
+async function start() {
+
+  const { data, error } =
+    await db.auth.getSession();
+
+
+  if (error) {
+
+    loginMessage.textContent =
+      "Fout bij controleren van login: " +
+      error.message;
+
+    return;
+
+  }
+
+
+  if (data.session) {
+
+    showAdmin();
+
+    await loadQuotes();
+
+  } else {
+
+    showLogin();
+
+  }
+
+}
+
+
+function formatDate(value) {
+
+  return new Date(
+    value + "T00:00:00"
+  ).toLocaleDateString(
+    "nl-NL",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+function escapeHTML(value) {
+
+  return String(value).replace(
+    /[&<>"']/g,
+
+    function(character) {
+
+      return {
+
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+
+      }[character];
+
+    }
+
+  );
+
+}
+
+
+start();
 
 </script>
 
