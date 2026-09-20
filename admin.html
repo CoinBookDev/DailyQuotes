@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyQuotes Admin</title>
-  <link rel="stylesheet" href="style.css">
+  <title>DailyQuotes Admin Test</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
@@ -12,33 +11,37 @@
 
 <body>
 
-<main class="container">
-  <h1>DailyQuotes Admin</h1>
+<h1>Supabase test</h1>
 
-  <section class="card">
-    <h2>Test</h2>
-
-    <button id="testButton">Test Supabase</button>
-
-    <p id="result">Nog niet getest.</p>
-  </section>
-</main>
+<p id="result">Test wordt uitgevoerd...</p>
 
 <script>
 
-alert("Stap 1: JavaScript werkt!");
-
 const result = document.getElementById("result");
 
-alert("Stap 2: Nu gaan we Supabase testen.");
+alert("1. Supabase is geladen");
 
-if (typeof supabase === "undefined") {
+if (typeof SUPABASE_URL === "undefined") {
 
-  result.textContent = "❌ Supabase is NIET geladen.";
+    result.textContent = "❌ SUPABASE_URL bestaat niet";
+    alert("2. SUPABASE_URL ontbreekt");
 
 } else {
 
-  result.textContent = "✅ Supabase is geladen!";
+    result.textContent = "✅ SUPABASE_URL gevonden";
+    alert("2. SUPABASE_URL is gevonden");
+
+}
+
+if (typeof SUPABASE_PUBLISHABLE_KEY === "undefined") {
+
+    result.textContent += " | ❌ Key ontbreekt";
+    alert("3. PUBLISHABLE KEY ontbreekt");
+
+} else {
+
+    result.textContent += " | ✅ Key gevonden";
+    alert("3. PUBLISHABLE KEY is gevonden");
 
 }
 
