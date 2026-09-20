@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DailyQuotes Admin</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+</head>
+<body>
+<main class="container">
+<h1>DailyQuotes Admin</h1>
+<section id="loginBox" class="card">
+<h2>Log in</h2>
+<input id="email" type="email" placeholder="E-mail" autocomplete="email">
+<input id="password" type="password" placeholder="Password" autocomplete="current-password">
+<button id="loginButton" type="button">Log in</button>
+<p id="loginMessage"></p>
+</section>
+<section id="adminBox" class="card hidden">
+<h2 id="formTitle">Add quote</h2>
+<label for="date">Date</label><input id="date" type="date">
+<label for="quote">Quote</label><textarea id="quote" placeholder="Write your quote here..."></textarea>
+<label for="author">Author</label><input id="author" type="text" placeholder="For example: Albert Einstein">
+<label for="category">Category</label>
+<select id="category">
+<option value="Love">❤️ Love</option><option value="Motivation">💪 Motivation</option><option value="Film & Series">🎬 Film & Series</option><option value="Music">🎵 Music</option><option value="Books">📚 Books</option><option value="Philosophy">🧠 Philosophy</option><option value="Sad / 3AM">🌧️ Sad / 3AM</option><option value="Funny">😂 Funny</option><option value="Life">🌟 Life</option><option value="Character Quotes">🎭 Character Quotes</option>
+</select>
+<div class="admin-actions"><button id="saveButton" type="button">Save quote</button><button id="cancelEditButton" type="button" class="hidden">Cancel edit</button></div>
+<p id="saveMessage"></p>
+<hr>
+<h2>🌄 Background</h2><p>Choose a background:</p>
+<div class="background-picker"><button id="mountainsButton" type="button">🏔️ Mountains</button><button id="forestButton" type="button">🌲 Forest</button><button id="cityButton" type="button">🌆 City</button></div>
+<hr>
+<h2>Planned quotes</h2><div id="quoteList">Loading...</div>
+<button id="logoutButton" type="button">Log out</button>
+</section>
+</main>
+<script>
+"use strict";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const $=id=>document.getElementById(id);
+const loginBox=$("loginBox"),adminBox=$("adminBox"),email=$("email"),password=$("password"),loginButton=$("loginButton"),logoutButton=$("logoutButton"),loginMessage=$("loginMessage"),formTitle=$("formTitle"),date=$("date"),quote=$("quote"),author=$("author"),category=$("category"),saveButton=$("saveButton"),cancelEditButton=$("cancelEditButton"),saveMessage=$("saveMessage"),quoteList=$("quoteList");
+let editingDate=null;
+function showAdmin(){loginBox.classList.add("hidden");adminBox.classList.remove("hidden")}
+function showLogin(){loginBox.classList.remove("hidden");adminBox.classList.add("hidden")}
+loginButton.addEventListener("click",async()=>{loginMessage.textContent="Logging in...";const{data,error}=await db.auth.signInWithPassword({email:email.value.trim(),password:password.value});if(error){loginMessage.textContent="Error: "+error.message;return}if(!data.session){loginMessage.textContent="Login succeeded, but no session was received.";return}loginMessage.textContent="";showAdmin();await loadQuotes()});
+password.addEventListener("keydown",e=>{if(e.key==="Enter")loginButton.click()});
+logoutButton.addEventListener("click",async()=>{const{error}=await db.auth.signOut();if(error){alert("Error logging out: "+error.message);return}resetForm();showLogin()});
+saveButton.addEventListener("click",async()=>{const selectedDate=date.value,selectedQuote=quote.value.trim(),selectedAuthor=author.value.trim(),selectedCategory=category.value;if(!selectedDate||!selectedQuote){saveMessage.textContent="Please enter a date and quote.";return}saveMessage.textContent="Saving...";saveButton.disabled=true;try{const{error}=await db.from("quotes").upsert({quote_date:selectedDate,quote:selectedQuote,author:selectedAuthor||null,category:selectedCategory},{onConflict:"quote_date"});if(error){saveMessage.textContent="Error: "+error.message;return}if(editingDate&&editingDate!==selectedDate){const{error:oldError}=await db.from("quotes").delete().eq("quote_date",editingDate);if(oldError){saveMessage.textContent="New quote saved, but old date could not be removed: "+oldError.message;return}}saveMessage.textContent=editingDate?"Quote updated!":"Quote saved!";resetForm();await loadQuotes()}finally{saveButton.disabled=false}});
+cancelEditButton.addEventListener("click",()=>{resetForm();saveMessage.textContent=""});
+async function loadQuotes(){quoteList.textContent="Loading...";const{data,error}=await db.from("quotes").select("quote_date, quote, author, category").order("quote_date",{ascending:true});if(error){quoteList.textContent="Error loading quotes: "+error.message;return}if(!data||!data.length){quoteList.textContent="There are no quotes yet.";return}quoteList.innerHTML="";data.forEach(item=>{const row=document.createElement("div");row.className="quote-row";const d=document.createElement("strong");d.textContent=formatDate(item.quote_date);const q=document.createElement("div");q.textContent='"'+item.quote+'"';const a=document.createElement("small");a.textContent=item.author?"— "+item.author:"";const c=document.createElement("small");c.textContent=item.category?"Category: "+item.category:"";c.style.display="block";c.style.marginTop="6px";const edit=document.createElement("button");edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>editQuote(item.quote_date));const del=document.createElement("button");del.type="button";del.textContent="Delete";del.style.marginLeft="8px";del.addEventListener("click",()=>deleteQuote(item.quote_date));row.append(d,document.createElement("br"),q,document.createElement("br"),a,c,document.createElement("div"));row.lastChild.style.marginTop="12px";row.lastChild.append(edit,del);quoteList.append(row,document.createElement("hr"))})}
+async function editQuote(selectedDate){const{data,error}=await db.from("quotes").select("quote_date, quote, author, category").eq("quote_date",selectedDate).maybeSingle();if(error){alert("Error loading quote: "+error.message);return}if(!data){alert("Quote not found.");return}editingDate=data.quote_date;date.value=data.quote_date;quote.value=data.quote||"";author.value=data.author||"";category.value=data.category||"Life";formTitle.textContent="Edit quote";saveButton.textContent="Update quote";cancelEditButton.classList.remove("hidden");saveMessage.textContent="Editing quote from "+formatDate(data.quote_date)+".";window.scrollTo({top:0,behavior:"smooth"})}
+async function deleteQuote(selectedDate){if(!confirm("Are you sure you want to delete the quote from "+formatDate(selectedDate)+"?"))return;const{error}=await db.from("quotes").delete().eq("quote_date",selectedDate);if(error){alert("Error deleting quote: "+error.message);return}if(editingDate===selectedDate)resetForm();await loadQuotes()}
+function resetForm(){editingDate=null;date.value="";quote.value="";author.value="";category.value="Life";formTitle.textContent="Add quote";saveButton.textContent="Save quote";cancelEditButton.classList.add("hidden")}
+function changeBackground(path){document.body.style.backgroundImage='linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)),url("'+path+'")';localStorage.setItem("dailyquotes-background",path)}
+$("mountainsButton").addEventListener("click",()=>changeBackground("backgrounds/mountains.jpg"));
+$("forestButton").addEventListener("click",()=>changeBackground("backgrounds/forest.jpg"));
+$("cityButton").addEventListener("click",()=>changeBackground("backgrounds/city.jpg"));
+function formatDate(v){return new Date(v+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}
+function loadSavedBackground(){const p=localStorage.getItem("dailyquotes-background");if(p)changeBackground(p)}
+async function start(){loadSavedBackground();const{data,error}=await db.auth.getSession();if(error){loginMessage.textContent="Error checking login: "+error.message;showLogin();return}if(data.session){showAdmin();await loadQuotes()}else showLogin()}
+start();
+</script>
+</body>
+</html>
