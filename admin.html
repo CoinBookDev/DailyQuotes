@@ -158,7 +158,13 @@ await loadQuotes();
 
 async function loadQuotes(){
 quoteList.textContent="Loading quotes...";
-const {data,error}=await db.from("quotes").select("quote_date,quote,author,category").order("quote_date",{ascending:true});
+const today = new Date().toLocaleDateString("en-CA");
+
+const {data,error}=await db
+  .from("quotes")
+  .select("quote_date,quote,author,category")
+  .gte("quote_date", today)
+  .order("quote_date",{ascending:true});
 if(error){quoteList.textContent="Error loading quotes: "+error.message;return}
 if(!data||data.length===0){quoteList.textContent="There are no quotes yet.";return}
 quoteList.innerHTML="";
