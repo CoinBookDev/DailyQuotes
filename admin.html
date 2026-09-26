@@ -28,6 +28,22 @@
 <p class="admin-subtitle">Create and manage your daily quotes.</p>
 </header>
 
+<h2>Edit Announcements</h2>
+
+<textarea id="announcementEditor" style="width:100%; height:200px;"></textarea>
+<br><br>
+<button id="saveAnnouncements">Save</button>
+
+<script>
+async function loadAnnouncements() {
+  const res = await fetch("announcements.json");
+  const data = await res.json();
+  document.getElementById("announcementEditor").value = JSON.stringify(data, null, 2);
+}
+
+loadAnnouncements();
+</script>
+  
 <section id="loginBox" class="card">
 <h2>Log in</h2>
 <input id="email" type="email" placeholder="E-mail">
