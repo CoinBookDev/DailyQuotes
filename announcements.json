@@ -1,0 +1,16 @@
+[
+  {
+    "message": "Attention: Tomorrow the site will go down because of an update.",
+    "type": "warning",
+    "startDate": "2026-09-26",
+    "endDate": "2026-09-27",
+    "active": true
+  },
+  {
+    "message": "November: Men's Mental Health Month.",
+    "type": "info",
+    "startDate": "2026-11-01",
+    "endDate": "2026-11-30",
+    "active": true
+  }
+]
