@@ -3,13 +3,11 @@ async function loadAnnouncements() {
   if (!container) return;
 
   try {
-    // Load the JSON file (updated by your admin panel)
-    const response = await fetch("/announcements.json");
+    const response = await fetch("announcements.json");
     const data = await response.json();
 
     const today = new Date();
 
-    // Only show active + date‑valid announcements
     const activeMessages = data.filter(item => {
       const start = new Date(item.startDate);
       const end = new Date(item.endDate);
@@ -18,7 +16,6 @@ async function loadAnnouncements() {
 
     if (activeMessages.length === 0) return;
 
-    // Render each announcement
     activeMessages.forEach(item => {
       const div = document.createElement("div");
       div.className = `announcement-item ${item.type}`;
@@ -31,5 +28,4 @@ async function loadAnnouncements() {
   }
 }
 
-// Run when the page loads
 document.addEventListener("DOMContentLoaded", loadAnnouncements);
