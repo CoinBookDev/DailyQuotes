@@ -43,7 +43,35 @@ async function loadAnnouncements() {
 
 loadAnnouncements();
 </script>
-  
+
+  <script>
+async function saveAnnouncements() {
+  const raw = document.getElementById("announcementEditor").value;
+
+  try {
+    const parsed = JSON.parse(raw);
+
+    const res = await fetch("/admin/update-announcements", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(parsed)
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      alert("Announcements saved!");
+    } else {
+      alert("Failed to save.");
+    }
+
+  } catch (e) {
+    alert("Invalid JSON format.");
+  }
+}
+
+document.getElementById("saveAnnouncements").onclick = saveAnnouncements;
+</script>
+
 <section id="loginBox" class="card">
 <h2>Log in</h2>
 <input id="email" type="email" placeholder="E-mail">
