@@ -377,3 +377,18 @@ hr {
   gap: 10px;
   flex-wrap: wrap;
 }
+#announcements {
+  background: #ffefc5;
+  padding: 12px 20px;
+  border-bottom: 1px solid #e0c98f;
+  font-size: 16px;
+}
+
+.announcement-item {
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.warning { color: #a33; }
+.info { color: #333; }
+.promo { color: #2a7; }
