@@ -1,0 +1,5 @@
+Add to style.css:
+#mediaFeed{max-width:700px;margin:auto;}
+.media-card{background:var(--card);border:1px solid var(--card-border);border-radius:22px;overflow:hidden;margin-bottom:25px;backdrop-filter:blur(18px);}
+.media-card img,.media-card video{width:100%;display:block;}
+.media-content{padding:20px;}
