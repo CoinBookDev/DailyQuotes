@@ -83,6 +83,17 @@ style="width:100%;height:220px;"></textarea>
 <button id="saveMedia">
 Save Media
 </button>
+  async function loadMedia() {
+ 
+const res = await fetch("media.json");
+const data = await res.json();
+ 
+document.getElementById("mediaEditor").value =
+JSON.stringify(data,null,2);
+ 
+}
+ 
+loadMedia();
 
 <section id="loginBox" class="card">
 <h2>Log in</h2>
