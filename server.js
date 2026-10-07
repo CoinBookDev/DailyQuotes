@@ -15,3 +15,22 @@ app.post("/admin/update-announcements", (req, res) => {
 });
 
 app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+app.post("/admin/update-media", (req, res) => {
+
+  const filePath =
+    path.join(__dirname, "media.json");
+
+  fs.writeFile(
+    filePath,
+    JSON.stringify(req.body, null, 2),
+    err => {
+
+      if (err)
+        return res.json({ success:false });
+
+      res.json({ success:true });
+
+    }
+  );
+
+});
