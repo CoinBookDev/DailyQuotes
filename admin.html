@@ -94,6 +94,33 @@ JSON.stringify(data,null,2);
 }
  
 loadMedia();
+  document.getElementById("saveMedia")
+.onclick = async () => {
+
+  try{
+
+    const parsed =
+      JSON.parse(
+        document.getElementById("mediaEditor").value
+      );
+
+    await fetch("/admin/update-media",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(parsed)
+    });
+
+    alert("Media saved!");
+
+  }catch{
+
+    alert("Invalid JSON");
+
+  }
+
+};
 
 <section id="loginBox" class="card">
 <h2>Log in</h2>
