@@ -28,100 +28,6 @@
 <p class="admin-subtitle">Create and manage your daily quotes.</p>
 </header>
 
-<h2>Edit Announcements</h2>
-
-<textarea id="announcementEditor" style="width:100%; height:200px;"></textarea>
-<br><br>
-<button id="saveAnnouncements">Save</button>
-
-<script>
-async function loadAnnouncements() {
-  const res = await fetch("announcements.json");
-  const data = await res.json();
-  document.getElementById("announcementEditor").value = JSON.stringify(data, null, 2);
-}
-
-loadAnnouncements();
-</script>
-
-  <script>
-async function saveAnnouncements() {
-  const raw = document.getElementById("announcementEditor").value;
-
-  try {
-    const parsed = JSON.parse(raw);
-
-    const res = await fetch("/admin/update-announcements", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsed)
-    });
-
-    const result = await res.json();
-    if (result.success) {
-      alert("Announcements saved!");
-    } else {
-      alert("Failed to save.");
-    }
-
-  } catch (e) {
-    alert("Invalid JSON format.");
-  }
-}
-
-document.getElementById("saveAnnouncements").onclick = saveAnnouncements;
-</script>
-  <hr>
- 
-<h2>Media Posts</h2>
- 
-<textarea id="mediaEditor"
-style="width:100%;height:220px;"></textarea>
- 
-<br><br>
- 
-<button id="saveMedia">
-Save Media
-</button>
-  async function loadMedia() {
- 
-const res = await fetch("media.json");
-const data = await res.json();
- 
-document.getElementById("mediaEditor").value =
-JSON.stringify(data,null,2);
- 
-}
- 
-loadMedia();
-  document.getElementById("saveMedia")
-.onclick = async () => {
-
-  try{
-
-    const parsed =
-      JSON.parse(
-        document.getElementById("mediaEditor").value
-      );
-
-    await fetch("/admin/update-media",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(parsed)
-    });
-
-    alert("Media saved!");
-
-  }catch{
-
-    alert("Invalid JSON");
-
-  }
-
-};
-
 <section id="loginBox" class="card">
 <h2>Log in</h2>
 <input id="email" type="email" placeholder="E-mail">
@@ -161,6 +67,27 @@ loadMedia();
 <button id="cancelEditButton" class="hidden" type="button">Cancel</button>
 </div>
 <p id="saveMessage"></p>
+
+
+
+<hr>
+
+<h2>📸 Media</h2>
+<p class="muted">Post photos or videos to the public Media feed. Only logged-in admins can upload or delete posts.</p>
+
+<label for="mediaFile">Photo or video</label>
+<input id="mediaFile" type="file" accept="image/*,video/mp4,video/webm,video/ogg">
+
+<img id="mediaPreview" class="media-upload-preview" alt="Media preview">
+
+<label for="mediaCaption">Caption</label>
+<textarea id="mediaCaption" placeholder="Write a caption (optional)..."></textarea>
+
+<button id="uploadMediaButton" type="button">Post media</button>
+<p id="mediaMessage" class="message"></p>
+
+<h3>Existing media</h3>
+<div id="mediaAdminList" class="media-admin-list">Loading...</div>
 
 <hr>
 
@@ -208,7 +135,7 @@ loginMessage.textContent="Logging in...";
 const {data,error}=await db.auth.signInWithPassword({email:email.value.trim(),password:password.value});
 if(error){loginMessage.textContent="Error: "+error.message;return}
 if(!data.session){loginMessage.textContent="Login succeeded, but no session was received.";return}
-loginMessage.textContent="";showAdmin();await loadQuotes();
+loginMessage.textContent="";showAdmin();await loadQuotes();await loadMediaAdmin();
 });
 
 logoutButton.addEventListener("click",async()=>{await db.auth.signOut();resetForm();showLogin()});
@@ -296,10 +223,167 @@ localStorage.setItem("dailyquotes-background",image);
 const savedBackground=localStorage.getItem("dailyquotes-background");
 if(savedBackground)document.body.style.backgroundImage=`linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)),url("${savedBackground}")`;
 
+
+const mediaFile = document.getElementById("mediaFile");
+const mediaCaption = document.getElementById("mediaCaption");
+const mediaPreview = document.getElementById("mediaPreview");
+const uploadMediaButton = document.getElementById("uploadMediaButton");
+const mediaMessage = document.getElementById("mediaMessage");
+const mediaAdminList = document.getElementById("mediaAdminList");
+
+mediaFile.addEventListener("change", () => {
+  const file = mediaFile.files[0];
+  if (!file) {
+    mediaPreview.style.display = "none";
+    mediaPreview.removeAttribute("src");
+    return;
+  }
+  if (file.type.startsWith("image/")) {
+    mediaPreview.src = URL.createObjectURL(file);
+    mediaPreview.style.display = "block";
+  } else {
+    mediaPreview.style.display = "none";
+  }
+});
+
+async function loadMediaAdmin() {
+  mediaAdminList.textContent = "Loading...";
+
+  const {data, error} = await db
+    .from("media_posts")
+    .select("id, media_type, storage_path, caption, created_at")
+    .order("created_at", {ascending:false});
+
+  if (error) {
+    mediaAdminList.textContent = "Error loading media: " + error.message;
+    return;
+  }
+
+  if (!data?.length) {
+    mediaAdminList.textContent = "No media posts yet.";
+    return;
+  }
+
+  mediaAdminList.innerHTML = "";
+
+  data.forEach(post => {
+    const {data:urlData} = db.storage.from("media").getPublicUrl(post.storage_path);
+    const row = document.createElement("div");
+    row.className = "media-admin-row";
+
+    const media = post.media_type === "video"
+      ? document.createElement("video")
+      : document.createElement("img");
+
+    media.src = urlData.publicUrl;
+    if (post.media_type === "video") {
+      media.controls = true;
+      media.preload = "metadata";
+    }
+
+    const info = document.createElement("div");
+    info.className = "media-admin-info";
+    info.innerHTML = `<strong>${escapeHTML(post.caption || "Untitled post")}</strong>
+      <small>${new Date(post.created_at).toLocaleString()}</small>`;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "delete-button";
+    button.textContent = "Delete";
+    button.addEventListener("click", () => deleteMedia(post));
+
+    row.append(media, info, button);
+    mediaAdminList.appendChild(row);
+  });
+}
+
+async function uploadMedia() {
+  const file = mediaFile.files[0];
+  if (!file) {
+    mediaMessage.textContent = "Please choose an image or video.";
+    return;
+  }
+
+  if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+    mediaMessage.textContent = "Only image and video files are allowed.";
+    return;
+  }
+
+  const {data:{user}} = await db.auth.getUser();
+  if (!user) {
+    mediaMessage.textContent = "You must be logged in as an admin.";
+    return;
+  }
+
+  uploadMediaButton.disabled = true;
+  mediaMessage.textContent = "Uploading...";
+
+  const extension = (file.name.split(".").pop() || "bin").toLowerCase();
+  const path = `${user.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+  const mediaType = file.type.startsWith("video/") ? "video" : "image";
+
+  const {error:uploadError} = await db.storage
+    .from("media")
+    .upload(path, file, {upsert:false, contentType:file.type});
+
+  if (uploadError) {
+    mediaMessage.textContent = "Upload failed: " + uploadError.message;
+    uploadMediaButton.disabled = false;
+    return;
+  }
+
+  const {error:insertError} = await db.from("media_posts").insert({
+    media_type: mediaType,
+    storage_path: path,
+    caption: mediaCaption.value.trim()
+  });
+
+  if (insertError) {
+    await db.storage.from("media").remove([path]);
+    mediaMessage.textContent = "Could not create the post: " + insertError.message;
+    uploadMediaButton.disabled = false;
+    return;
+  }
+
+  mediaMessage.textContent = "Media posted!";
+  mediaFile.value = "";
+  mediaCaption.value = "";
+  mediaPreview.style.display = "none";
+  uploadMediaButton.disabled = false;
+  await loadMediaAdmin();
+}
+
+async function deleteMedia(post) {
+  if (!confirm("Delete this media post?")) return;
+
+  const {error:storageError} = await db.storage
+    .from("media")
+    .remove([post.storage_path]);
+
+  if (storageError) {
+    alert("Could not delete the media file: " + storageError.message);
+    return;
+  }
+
+  const {error:dbError} = await db
+    .from("media_posts")
+    .delete()
+    .eq("id", post.id);
+
+  if (dbError) {
+    alert("The file was deleted, but the post could not be removed: " + dbError.message);
+    return;
+  }
+
+  await loadMediaAdmin();
+}
+
+uploadMediaButton.addEventListener("click", uploadMedia);
+
 async function start(){
 const {data,error}=await db.auth.getSession();
 if(error){loginMessage.textContent="Error checking login: "+error.message;return}
-if(data.session){showAdmin();await loadQuotes()}else showLogin();
+if(data.session){showAdmin();await loadQuotes();await loadMediaAdmin()}else showLogin();
 }
 start();
 </script>
