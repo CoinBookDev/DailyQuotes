@@ -451,3 +451,131 @@ font-size:.9rem;
   .media-admin-row{align-items:flex-start;flex-direction:column;}
   .media-admin-row img,.media-admin-row video{width:100%;height:auto;max-height:300px;}
 }
+/* =========================
+   RANDOM QUOTE POPUP
+   ========================= */
+
+.random-quote-button {
+  display: block;
+  margin: 25px auto 0;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 10px;
+  background: #111;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.random-quote-button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* Dark overlay */
+.random-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* Hidden until the button is clicked */
+.random-modal.hidden {
+  display: none;
+}
+
+/* Popup */
+.random-modal-content {
+  position: relative;
+  width: min(550px, 100%);
+  background: white;
+  border-radius: 20px;
+  padding: 40px 35px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: randomPopup 0.2s ease-out;
+}
+
+@keyframes randomPopup {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* X button */
+.random-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: none;
+  background: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #777;
+}
+
+.random-close:hover {
+  color: #111;
+}
+
+/* Quote */
+.random-quote {
+  font-size: 24px;
+  line-height: 1.5;
+  margin: 20px 0 12px;
+  font-weight: 500;
+}
+
+/* Author */
+.random-modal-content .author {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+/* Date */
+.random-modal-content .date {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Another quote button */
+.random-again-button {
+  margin-top: 25px;
+  padding: 11px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #111;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.random-again-button:hover {
+  opacity: 0.85;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .random-modal-content {
+    padding: 35px 22px;
+  }
+
+  .random-quote {
+    font-size: 20px;
+  }
+}
