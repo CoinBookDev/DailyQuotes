@@ -170,13 +170,6 @@ async function showRandomQuote() {
 
   document.getElementById("randomCategory").textContent =
     quote.category || "Life";
-
-  document.getElementById("randomDate").textContent =
-    new Date(quote.quote_date + "T00:00:00").toLocaleDateString("en-US", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
     });
 }
 
