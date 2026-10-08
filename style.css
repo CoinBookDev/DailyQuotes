@@ -281,6 +281,10 @@ button:active {
   margin-bottom: 12px;
 }
 
+#searchInput {
+margin-top: 10px;
+}
+
 .quote-row {
   padding: 18px;
   margin: 12px 0;
