@@ -22,6 +22,12 @@
     </header>
 
     <section class="card archive-controls">
+      <label for="searchInput">Search quotes</label>
+<input
+  type="text"
+  id="searchInput"
+  placeholder="Search quote, author or category..."
+>
       <label for="categoryFilter">Filter by category</label>
       <select id="categoryFilter">
         <option value="">All categories</option>
@@ -93,12 +99,45 @@
     const savedBackground = localStorage.getItem("dailyquotes-background");
     if (savedBackground) changeBackground(savedBackground);
 
-    function renderQuotes() {
-      const list = document.getElementById("archiveList");
-      const filter = document.getElementById("categoryFilter").value;
+function renderQuotes() {
 
-      const filtered = allQuotes.filter(item =>
-        !filter || item.category === filter
+  const list = document.getElementById("archiveList");
+
+  const filter =
+    document.getElementById("categoryFilter").value;
+
+  const search =
+    document.getElementById("searchInput")
+      .value
+      .toLowerCase();
+
+  const filtered = allQuotes.filter(item => {
+
+    const categoryMatch =
+      !filter || item.category === filter;
+
+    const searchMatch =
+      !search ||
+
+      (item.quote || "")
+      .toLowerCase()
+      .includes(search)
+
+      ||
+
+      (item.author || "")
+      .toLowerCase()
+      .includes(search)
+
+      ||
+
+      (item.category || "")
+      .toLowerCase()
+      .includes(search);
+
+    return categoryMatch && searchMatch;
+
+  });
       );
 
       if (!filtered.length) {
@@ -136,6 +175,8 @@
     }
 
     document.getElementById("categoryFilter").addEventListener("change", renderQuotes);
+    document.getElementById("searchInput")
+.addEventListener("input", renderQuotes);
     document.getElementById("resetButton").addEventListener("click", () => {
       document.getElementById("categoryFilter").value = "";
       renderQuotes();
