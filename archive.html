@@ -20,6 +20,17 @@
       <h1>Quote Archive</h1>
       <p class="subtitle">Look back at previous daily quotes.</p>
     </header>
+        
+    <section class="background-section">
+      <p>Background</p>
+      <div class="background-picker">
+        <button onclick="changeBackground('backgrounds/mountains.jpg')">🏔️ Mountains</button>
+        <button onclick="changeBackground('backgrounds/forest.jpg')">🌲 Forest</button>
+        <button onclick="changeBackground('backgrounds/city.jpg')">🌆 City</button>
+        <button onclick="changeBackground('backgrounds/StarrySky.jpg')">Starry sky</button>
+      </div>
+    </section>
+  </main>
 
     <section class="card archive-controls">
       <label for="searchInput">Search quotes</label>
@@ -51,15 +62,7 @@
 
     <p id="message" class="message"></p>
 
-    <section class="background-section">
-      <p>Background</p>
-      <div class="background-picker">
-        <button onclick="changeBackground('backgrounds/mountains.jpg')">🏔️ Mountains</button>
-        <button onclick="changeBackground('backgrounds/forest.jpg')">🌲 Forest</button>
-        <button onclick="changeBackground('backgrounds/city.jpg')">🌆 City</button>
-      </div>
-    </section>
-  </main>
+
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
