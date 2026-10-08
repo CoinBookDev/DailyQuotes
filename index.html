@@ -125,7 +125,7 @@
     }
 
     loadToday();
-    const randomModal = document.getElementById("randomQuoteModal");
+const randomModal = document.getElementById("randomQuoteModal");
 const randomQuoteButton = document.getElementById("randomQuoteButton");
 const closeRandomQuote = document.getElementById("closeRandomQuote");
 const anotherRandomQuote = document.getElementById("anotherRandomQuote");
@@ -170,7 +170,15 @@ async function showRandomQuote() {
 
   document.getElementById("randomCategory").textContent =
     quote.category || "Life";
+
+  document.getElementById("randomDate").textContent =
+    new Date(quote.quote_date + "T00:00:00").toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
     });
+}
 
 randomQuoteButton.addEventListener("click", showRandomQuote);
 
