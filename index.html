@@ -46,6 +46,27 @@
         <button onclick="changeBackground('backgrounds/StarrySky.jpg')">🌌 Starry Sky</button>
       </div>
     </section>
+    <div id="randomQuoteModal" class="random-modal hidden">
+  <div class="random-modal-content">
+    <button id="closeRandomQuote" class="random-close">&times;</button>
+
+    <p class="eyebrow">RANDOM QUOTE</p>
+
+    <span id="randomCategory" class="category-badge"></span>
+
+    <p id="randomQuote" class="random-quote">
+      Loading...
+    </p>
+
+    <p id="randomAuthor" class="author"></p>
+
+    <p id="randomDate" class="date"></p>
+
+    <button id="anotherRandomQuote" class="random-again-button">
+      🎲 Another quote
+    </button>
+  </div>
+</div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
