@@ -125,6 +125,75 @@
     }
 
     loadToday();
+    const randomModal = document.getElementById("randomQuoteModal");
+const randomQuoteButton = document.getElementById("randomQuoteButton");
+const closeRandomQuote = document.getElementById("closeRandomQuote");
+const anotherRandomQuote = document.getElementById("anotherRandomQuote");
+
+async function showRandomQuote() {
+  randomModal.classList.remove("hidden");
+
+  document.getElementById("randomQuote").textContent = "Loading...";
+  document.getElementById("randomAuthor").textContent = "";
+  document.getElementById("randomCategory").textContent = "";
+  document.getElementById("randomDate").textContent = "";
+
+  const today = getToday();
+
+  const { data, error } = await db
+    .from("quotes")
+    .select("quote, author, category, quote_date")
+    .lte("quote_date", today);
+
+  if (error) {
+    document.getElementById("randomQuote").textContent =
+      "Couldn't load a random quote.";
+    console.error(error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    document.getElementById("randomQuote").textContent =
+      "There aren't any archived quotes yet.";
+    return;
+  }
+
+  // Pick a random quote
+  const randomIndex = Math.floor(Math.random() * data.length);
+  const quote = data[randomIndex];
+
+  document.getElementById("randomQuote").textContent =
+    `"${quote.quote}"`;
+
+  document.getElementById("randomAuthor").textContent =
+    quote.author ? `— ${quote.author}` : "";
+
+  document.getElementById("randomCategory").textContent =
+    quote.category || "Life";
+
+  document.getElementById("randomDate").textContent =
+    new Date(quote.quote_date + "T00:00:00").toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+}
+
+randomQuoteButton.addEventListener("click", showRandomQuote);
+
+anotherRandomQuote.addEventListener("click", showRandomQuote);
+
+closeRandomQuote.addEventListener("click", () => {
+  randomModal.classList.add("hidden");
+});
+
+// Close when clicking outside the popup
+randomModal.addEventListener("click", (event) => {
+  if (event.target === randomModal) {
+    randomModal.classList.add("hidden");
+  }
+});
   </script>
 </body>
 </html>
