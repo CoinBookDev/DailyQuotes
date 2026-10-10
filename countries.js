@@ -197,3 +197,14 @@ const countries = [
   {id:"zmb", flag:"🇿🇲", name:"Zambia"},
   {id:"zwe", flag:"🇿🇼", name:"Zimbabwe"},
 ];
+const countryContainer = document.getElementById("countryButtons");
+
+countries.forEach(country => {
+    const button = document.createElement("button");
+
+    button.className = "country-button";
+    button.textContent = `${country.flag} ${country.name}`;
+    button.type = "button";
+
+    countryContainer.appendChild(button);
+});
