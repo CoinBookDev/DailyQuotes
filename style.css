@@ -573,3 +573,31 @@ font-size:.9rem;
     font-size: 20px;
   }
 }
+.daily-world-card{
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.world-controls{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin:20px 0;
+}
+
+.country-card{
+    padding:10px;
+    margin:5px;
+    cursor:pointer;
+}
+
+.progress-card{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+#countryInfo{
+    margin-top:30px;
+    text-align:center;
+}
