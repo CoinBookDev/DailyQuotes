@@ -206,5 +206,17 @@ countries.forEach(country => {
     button.textContent = `${country.flag} ${country.name}`;
     button.type = "button";
 
+    button.addEventListener("click", function () {
+        const quote = quotes.find(q => q[0] === country.id);
+
+        if (!quote || quote[1] === "N/A") {
+            alert("No quote available for this country yet.");
+            return;
+        }
+
+        document.getElementById("dailyQuote").textContent = quote[1];
+        document.getElementById("quoteAuthor").textContent = quote[2];
+    });
+
     countryContainer.appendChild(button);
 });
