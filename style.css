@@ -601,3 +601,22 @@ font-size:.9rem;
     margin-top:30px;
     text-align:center;
 }
+#countryButtons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 20px;
+}
+
+.country-button {
+    padding: 12px;
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.country-button:hover {
+    background: #444;
+}
