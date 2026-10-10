@@ -197,3 +197,14 @@ const quotes = [
     ["zmb", "N/A", "N/A"],
     ["zwe", "N/A", "N/A"]
 ];
+const countryContainer = document.getElementById("countryButtons");
+
+countries.forEach(country => {
+    const button = document.createElement("button");
+
+    button.className = "country-button";
+    button.textContent = `${country.flag} ${country.name}`;
+    button.type = "button";
+
+    countryContainer.appendChild(button);
+});
