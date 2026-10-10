@@ -197,14 +197,17 @@ const countries = [
   {id:"zmb", flag:"🇿🇲", name:"Zambia"},
   {id:"zwe", flag:"🇿🇼", name:"Zimbabwe"},
 ];
-const countryContainer = document.getElementById("countryButtons");
+button.addEventListener("click", () => {
+    const quote = quotes.find(q => q[0] === country.id);
 
-countries.forEach(country => {
-    const button = document.createElement("button");
+    console.log("Selected country:", country.id);
+    console.log("Found quote:", quote);
 
-    button.className = "country-button";
-    button.textContent = `${country.flag} ${country.name}`;
-    button.type = "button";
+    if (!quote || quote[1] === "N/A") {
+        alert("No quote available for this country yet.");
+        return;
+    }
 
-    countryContainer.appendChild(button);
+    document.getElementById("dailyQuote").textContent = quote[1];
+    document.getElementById("quoteAuthor").textContent = quote[2];
 });
