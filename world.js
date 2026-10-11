@@ -250,15 +250,26 @@ if (svgObject) {
                         element.getAttribute(
                             "name"
                         );
+                    element.addEventListener(
+    "click",
+    () => {
 
-                    const matchingCountry =
+        const countryName =
+            element.getAttribute("name");
+
+        alert(countryName);
+
+    }
+);
+
+                  /*  const matchingCountry =
                         countries.find(
                             c =>
                             c.name
                             .toLowerCase()
                             ===
                             countryName
-                            .toLowerCase()
+                            .toLowerCase()*/
                         );
 
                     if (!matchingCountry)
