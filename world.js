@@ -1,4 +1,3 @@
-
 function loadDailyQuote() {
 
     const today =
@@ -8,117 +7,128 @@ function loadDailyQuote() {
         countries[today % countries.length];
 
     document.getElementById("dailyCountry")
-        .textContent = country.flag + " " + country.name;
+        .textContent =
+        `${country.flag} ${country.name}`;
 
     document.getElementById("dailyQuote")
         .textContent =
-        `"${country.quote}" — ${country.author}`;
+        "Click a country on the map to discover it.";
 }
+
 const container =
 document.getElementById("countriesContainer");
 
 function renderCountries(list) {
 
-container.innerHTML = "";
+    if (!container) return;
 
-list.forEach(country => {
+    container.innerHTML = "";
 
-const card =
-document.createElement("button");
+    list.forEach(country => {
 
-card.className = "country-card";
+        const card =
+            document.createElement("button");
 
-card.textContent =
-`${country.flag} ${country.name}`;
+        card.className = "country-card";
 
-card.onclick = () => showCountry(country);
+        card.textContent =
+            `${country.flag} ${country.name}`;
 
-container.appendChild(card);
-});
+        card.onclick = () =>
+            showCountry(country);
 
-}function showCountry(country) {
+        container.appendChild(card);
 
-let discovered =
-JSON.parse(
-localStorage.getItem("discoveredCountries")
-) || [];
-
-if(!discovered.includes(country.id)){
-
-    discovered.push(country.id);
-
-    localStorage.setItem(
-        "discoveredCountries",
-        JSON.stringify(discovered)
-    );
-
-    updateProgress();
-}
-
-document.getElementById("countryInfo")
-.innerHTML = `
-
-<h2>${country.flag} ${country.name}</h2>
-
-<p>"${country.quote}"</p>
-
-<b>${country.author}</b>
-
-`;
+    });
 
 }
-function updateProgress(){
 
-const discovered =
-JSON.parse(
-localStorage.getItem(
-"discoveredCountries"
-)
-) || [];
+function showCountry(country) {
 
+    let discovered =
+        JSON.parse(
+            localStorage.getItem(
+                "discoveredCountries"
+            )
+        ) || [];
+
+    if (!discovered.includes(country.id)) {
+
+        discovered.push(country.id);
+
+        localStorage.setItem(
+            "discoveredCountries",
+            JSON.stringify(discovered)
+        );
+
+        updateProgress();
+
+    }
+
+    document.getElementById(
+        "countryInfo"
+    ).innerHTML = `
+
+        <h2>
+            ${country.flag}
+            ${country.name}
+        </h2>
+
+        <p>
+            Country discovered ✅
+        </p>
+
+    `;
+
+}
+
+function updateProgress() {
+
+    const discovered =
+        JSON.parse(
+            localStorage.getItem(
+                "discoveredCountries"
+            )
+        ) || [];
+
+    document.getElementById(
+        "discoveryProgress"
+    ).textContent =
+        `${discovered.length} / ${countries.length}`;
+
+}
+
+const searchInput =
 document.getElementById(
-"discoveryProgress"
-).textContent =
-
-`${discovered.length}
-/
-${countries.length}`;
-
-}
-document
-.getElementById("countrySearch")
-.addEventListener("input", e => {
-
-const search =
-e.target.value.toLowerCase();
-
-const filtered =
-countries.filter(country =>
-
-country.name
-.toLowerCase()
-.includes(search)
-
+    "countrySearch"
 );
 
-renderCountries(filtered);
+if (searchInput) {
 
-});
-document
-.getElementById("randomCountryBtn")
-.addEventListener("click", () => {
+    searchInput.addEventListener(
+        "input",
+        e => {
 
-const random =
-countries[
-Math.floor(
-Math.random() *
-countries.length
-)
-];
+            const search =
+                e.target.value.toLowerCase();
 
-showCountry(random);
+            const filtered =
+                countries.filter(country =>
+                    country.name
+                    .toLowerCase()
+                    .includes(search)
+                );
 
-});
-loadDailyQuote();
-renderCountries(countries);
-updateProgress();
+            renderCountries(filtered);
+
+        }
+    );
+
+}
+
+const randomBtn =
+document.getElementById(
+    "randomCountryBtn"
+);
+
+if (randomBtn
