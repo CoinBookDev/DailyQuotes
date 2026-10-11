@@ -15,7 +15,33 @@ function loadDailyQuote() {
         "Click a country on the map to discover it.";
 }
 
-const container =
+const svgObject = document.getElementById("svgMap");
+
+if (svgObject) {
+
+    svgObject.addEventListener("load", () => {
+
+        const svgDoc = svgObject.contentDocument;
+
+        const netherlands =
+            svgDoc.getElementById("NL");
+
+        if (netherlands) {
+
+            netherlands.style.fill = "red";
+
+            netherlands.addEventListener(
+                "click",
+                () => alert("Netherlands works!")
+            );
+
+        }
+
+    });
+
+}
+
+/*const container =
 document.getElementById("countriesContainer");
 
 function renderCountries(list) {
@@ -107,7 +133,7 @@ function showCountry(country) {
         </p>
 
     `;
-}
+}*/
 
 function updateProgress() {
 
@@ -200,7 +226,7 @@ if (toggleBtn) {
 
 }
 
-const svgObject =
+//const svgObject =
 document.getElementById("svgMap");
 
 if (svgObject) {
