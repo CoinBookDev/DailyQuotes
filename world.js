@@ -29,13 +29,16 @@ function renderCountries(list) {
         const card =
             document.createElement("button");
 
-        card.className = "country-card";
+        card.className =
+            "country-card";
 
         card.textContent =
             `${country.flag} ${country.name}`;
 
-        card.onclick = () =>
-            showCountry(country);
+        card.addEventListener(
+            "click",
+            () => showCountry(country)
+        );
 
         container.appendChild(card);
 
@@ -65,6 +68,27 @@ function showCountry(country) {
 
     }
 
+    let quoteText =
+        "Quote coming soon";
+
+    let authorText =
+        "";
+
+    if (
+        typeof worldQuotes !== "undefined" &&
+        worldQuotes[country.name]
+    ) {
+
+        quoteText =
+            worldQuotes[country.name].quote ||
+            quoteText;
+
+        authorText =
+            worldQuotes[country.name].author ||
+            "";
+
+    }
+
     document.getElementById(
         "countryInfo"
     ).innerHTML = `
@@ -74,12 +98,15 @@ function showCountry(country) {
             ${country.name}
         </h2>
 
+        <blockquote>
+            "${quoteText}"
+        </blockquote>
+
         <p>
-            Country discovered ✅
+            ${authorText}
         </p>
 
     `;
-
 }
 
 function updateProgress() {
@@ -113,7 +140,8 @@ if (searchInput) {
                 e.target.value.toLowerCase();
 
             const filtered =
-                countries.filter(country =>
+                countries.filter(
+                    country =>
                     country.name
                     .toLowerCase()
                     .includes(search)
@@ -131,4 +159,130 @@ document.getElementById(
     "randomCountryBtn"
 );
 
-if (randomBtn
+if (randomBtn) {
+
+    randomBtn.addEventListener(
+        "click",
+        () => {
+
+            const random =
+                countries[
+                    Math.floor(
+                        Math.random() *
+                        countries.length
+                    )
+                ];
+
+            showCountry(random);
+
+        }
+    );
+
+}
+
+const toggleBtn =
+document.getElementById(
+    "toggleCountriesBtn"
+);
+
+if (toggleBtn) {
+
+    toggleBtn.addEventListener(
+        "click",
+        () => {
+
+            container.classList.toggle(
+                "hidden"
+            );
+
+        }
+    );
+
+}
+
+const svgObject =
+document.getElementById("svgMap");
+
+if (svgObject) {
+
+    svgObject.addEventListener(
+        "load",
+        () => {
+
+            const svgDoc =
+                svgObject.contentDocument;
+
+            const svgCountries =
+                svgDoc.querySelectorAll(
+                    "[name]"
+                );
+
+            svgCountries.forEach(
+                element => {
+
+                    const countryName =
+                        element.getAttribute(
+                            "name"
+                        );
+
+                    const matchingCountry =
+                        countries.find(
+                            c =>
+                            c.name
+                            .toLowerCase()
+                            ===
+                            countryName
+                            .toLowerCase()
+                        );
+
+                    if (!matchingCountry)
+                        return;
+
+                    element.style.cursor =
+                        "pointer";
+
+                    element.addEventListener(
+                        "mouseenter",
+                        () => {
+
+                            element.style.fill =
+                                "#D6B37F";
+
+                        }
+                    );
+
+                    element.addEventListener(
+                        "mouseleave",
+                        () => {
+
+                            element.style.fill =
+                                "";
+
+                        }
+                    );
+
+                    element.addEventListener(
+                        "click",
+                        () => {
+
+                            showCountry(
+                                matchingCountry
+                            );
+
+                            element.style.fill =
+                                "#4CAF50";
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+loadDailyQuote();
+renderCountries(countries);
+updateProgress();
