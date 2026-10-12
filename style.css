@@ -629,7 +629,7 @@ font-size:.9rem;
 
 #svgMap {
     width: 100%;
-    height: 100%;
+    height: auto;
     min-height: 700px;
     border: none;
 }
