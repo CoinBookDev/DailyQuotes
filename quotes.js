@@ -2,7 +2,7 @@ const quotes = [
     ["afg", "The wound is the place where the Light enters you.", "Rumi"],
     ["alb", "The world breaks everyone, and afterward, some are strong at the broken places.", "Ernest Hemingway"],
     ["dza", "In the depth of winter, I finally learned that within me there lay an invincible summer.", "Albert Camus"],
-    ["and", "N/A", "N/A"],
+    ["and", "He who doesn't want dust shouldn't go to the threshing floor.", "N/A"],
     ["ago", "N/A", "N/A"],
     ["atg", "N/A", "N/A"],
     ["arg", "I have always imagined that Paradise will be a kind of library.", "Jorge Luis Borges"],
