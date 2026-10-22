@@ -239,8 +239,9 @@ if (svgObject) {
                 svgObject.contentDocument;
 
             const svgCountries =
-                svgDoc.querySelectorAll(
-                    "[name]"
+    svgDoc.querySelectorAll("[name]");
+
+console.log(svgCountries.length);
                 );
 
             svgCountries.forEach(
