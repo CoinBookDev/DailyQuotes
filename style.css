@@ -71,7 +71,7 @@ body::before {
 }
 
 #moreDropdown {
-    display: none;
+    display: block;
     position: absolute;
     top: 100%;
     right: 0;
