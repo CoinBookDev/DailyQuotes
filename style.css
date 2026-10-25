@@ -92,6 +92,16 @@ body::before {
 #moreDropdown.show {
     display: block;
 }
+@media (max-width: 768px) {
+
+    .desktop-only {
+        display: none;
+    }
+
+    .more-menu {
+        display: block;
+    }
+}
 
 .hero {
   text-align: center;
