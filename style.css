@@ -63,7 +63,7 @@ body::before {
 
 .more-menu {
     position: relative;
-    display: none;
+    display: block;
 }
 
 #moreBtn {
