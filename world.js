@@ -273,7 +273,7 @@ console.log(svgCountries.length);
                             .toLowerCase()*/
                         );
 
-                    if (!matchingCountry)
+                  /*  if (!matchingCountry)
                         return;
 
                     element.style.cursor =
@@ -284,7 +284,15 @@ console.log(svgCountries.length);
                         () => {
 
                             element.style.fill =
-                                "#D6B37F";
+                                "#D6B37F"; */
+    element.style.cursor = "pointer";
+
+element.addEventListener(
+    "click",
+    () => {
+        alert(countryName);
+    }
+);
 
                         }
                     );
