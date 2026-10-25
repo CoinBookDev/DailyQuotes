@@ -21,13 +21,22 @@
 </style>
 </head>
 <body>
-<nav class="top-nav">
+<nav>
     <a href="index.html">Today</a>
     <a href="archive.html">Archive</a>
     <a href="media.html">Media</a>
-    <a href="world.html">World (beta)</a>
-    <a href="contact.html">Contact (beta)</a>
-    <a href="admin.html">Admin</a>
+
+    <div class="more-menu">
+        <button id="moreBtn">More ▼</button>
+
+        <div id="moreDropdown">
+            <a href="world.html">World</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </div>
+
+    <a class="desktop-only" href="world.html">World</a>
+    <a class="desktop-only" href="admin.html">Admin</a>
 </nav>
 <main class="container">
 <header class="admin-header">
