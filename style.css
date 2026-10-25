@@ -628,8 +628,8 @@ font-size:.9rem;
 }
 
 #svgMap {
-    width: 100%;
-    height: auto;
+    width: 1000px;
+    height: 2000px;
     min-height: 700px;
     border: none;
     transform: scale(3);
