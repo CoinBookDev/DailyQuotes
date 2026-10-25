@@ -98,8 +98,17 @@ body::before {
         display: none;
     }
 
-    .more-menu {
-        display: block;
+.more-menu {
+    position: relative;
+}
+
+#moreDropdown {
+    display: none;
+}
+
+#moreDropdown.show {
+    display: block;
+}
     }
 }
 
