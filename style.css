@@ -748,10 +748,10 @@ font-size:.9rem;
 
 .announcement-box {
   position: absolute;
-  left: 30px;
-  top: 180px;
+  left: 40px;
+  top: 250px;
 
-  width: 220px;
+  width: 280px;
   padding: 15px;
 
   background: rgba(0,0,0,0.3);
