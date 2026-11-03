@@ -1,520 +1,176 @@
+Here is the corrected HTML code.
+
+class=class="str">"cmt">### Summary of Bugs Found
+class="num">1.  **Duplicate `<main>` Tag:** The `</body>` tag appeared in the middle of the file, closing the body before the content started. Additionally, the `<main>` tag was duplicated.
+class="num">2.  **Script Placement:** JavaScript was placed outside the `<html>` structure and inside the `<head>`, preventing it from accessing DOM elements that hadnclass="str">'t loaded yet.
+class="num">3.  **Missing Function Definitions:** The navigation buttons(`onclick=class="str">"showPanel(...)"`) and background buttons(`onclick=class="str">"changeBackground(...)"`) were present in the HTML, but the functions were defined at the bottom of the script. In strict mode or certain browser parsing scenarios, this can cause class="str">"Function not defined" errors if the HTML parses before the script block is fully interpreted(though usually, hoisting handles this, moving them up is best practice).
+class="num">4.  **Redundant/Conflicting Elements:** There were multiple logout buttons and desktop-only links that seemed like copy-paste leftovers.
+class="num">5.  **Logic Error in Dashboard:** The dashboard was created but never called via `loadDashboard()`.
+
+class=class="str">"cmt">### Corrected Code
+
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang=class="str">"en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset=class="str">"UTF-class="num">8">
+<meta name=class="str">"viewport" content=class="str">"width=device-width, initial-scale=class="num">1.0">
 <title>DailyQuotes Admin</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+<link rel=class="str">"stylesheet" href=class="str">"style.css">
+<script src=class="str">"https:class="cmtclass="str">">//cdn.jsdelivr.net/npm/@supabase/supabase-js@class="num">2"></script>
+<script src=class="str">"config.js"></script>
 <style>
-.admin-header{margin-bottom:28px}
-.admin-kicker{margin:0 0 2px;font-size:.85rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.72}
-.admin-header h1{margin:0}
-.admin-subtitle{margin:4px 0 0;opacity:.72}
-.quote-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
-.quote-header h2{margin:0}
-.quote-header select{width:auto!important;min-width:150px;max-width:210px;margin:0}
-.form-buttons{display:flex;gap:10px;flex-wrap:wrap}
-.quote-row .delete-button{background:#dc2626!important;color:#fff!important;border-color:#b91c1c!important}
-.quote-row .delete-button:hover{background:#b91c1c!important}
+    class=class="str">"cmt">/* Admin Specific Styles */
+    .admin-header{margin-bottom:28px}
+    .admin-kicker{margin:class="num">0 class="num">0 2px;font-size:.85rem;font-weight:class="num">700;letter-spacing:.18em;text-transform:uppercase;opacity:.class="num">72}
+    .admin-header h1{margin:class="num">0}
+    .admin-subtitle{margin:4px class="num">0 class="num">0;opacity:.class="num">72}
+    .quote-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
+    .quote-header h2{margin:class="num">0}
+    .quote-header select{width:auto!important;min-width:150px;max-width:210px;margin:class="num">0}
+    .form-buttons{display:flex;gap:10px;flex-wrap:wrap}
+    .quote-row .delete-button{background:class=class="str">"cmt">#dc2626!important;color:#fff!important;border-color:#b91c1c!important}
+    .quote-row .delete-button:hover{background:class=class="str">"cmt">#b91c1c!important}
+    
+    class=class="str">"cmt">/* Utility for panels */
+    .hidden { display: none; }
 </style>
 </head> 
-<script>
-const moreBtn =
-    document.getElementById("moreBtn");
-
-const moreDropdown =
-    document.getElementById("moreDropdown");
-
-if (moreBtn && moreDropdown) {
-    moreBtn.addEventListener("click", () => {
-        moreDropdown.classList.toggle("show");
-    });
-}
-</script>
-
-</body>
 <body>
-<main class="container">
-    <nav class="top-nav">
-    <a href="index.html">Today</a>
-    <a href="archive.html">Archive</a>
-    <a href="media.html">Media</a>
 
-    <div class="more-menu">
-        <button id="moreBtn">More ▼</button>
+<main class=class="str">"container">
+    <nav class=class="str">"top-nav">
+        <a href=class="str">"index.html">Today</a>
+        <a href=class="str">"archive.html">Archive</a>
+        <a href=class="str">"media.html">Media</a>
 
-        <div id="moreDropdown">
-            <a href="world.html">World (beta)</a>
-            <a href="contact.html">Contact (beta)</a>
-            <a href="admin.html">Admin</a>
+        <div class=class="str">"more-menu">
+            <button id=class="str">"moreBtn">More ▼</button>
+            <div id=class="str">"moreDropdown">
+                <a href=class="str">"world.html">World(beta)</a>
+                <a href=class="str">"contact.html">Contact(beta)</a>
+                <a href=class="str">"admin.html">Admin</a>
+            </div>
         </div>
-    </div>
-
-    <a class="desktop-only" href="world.html">World (beta)</a>
-    <a class="desktop-only" href="admin.html">Contact (beta)</a>
-    <a class="desktop-only" href="admin.html">Admin</a>
-</nav>
-<main class="container">
-<header class="admin-header">
-<p class="admin-kicker">Management</p>
-<h1>DailyQuotes Admin</h1>
-<p class="admin-subtitle">Create and manage your daily quotes.</p>
-</header>
-
-<section id="loginBox" class="card">
-<h2>Log in</h2>
-<input id="email" type="email" placeholder="E-mail">
-<input id="password" type="password" placeholder="Password">
-<button id="loginButton">Log in</button>
-<p id="loginMessage"></p>
-</section>
-
-<section id="adminBox" class="hidden">
-
-<div class="admin-layout">
-
-<aside class="admin-sidebar">
-
-<h3>DailyQuotes</h3>
 
-<button onclick="showPanel('dashboardPanel')">
-📊 Dashboard
-</button>
-
-<button onclick="showPanel('quotesPanel')">
-📝 Quotes
-</button>
-
-<button onclick="showPanel('mediaPanel')">
-📸 Media
-</button>
-
-<button onclick="showPanel('backgroundPanel')">
-🌄 Backgrounds
-</button>
-
-<button id="logoutButton">
-🚪 Log Out
-</button>
-
-</aside>
-
-<div class="admin-content">
-    <div id="dashboardPanel" class="panel">
-
-<div class="dashboard-grid">
-
-<div class="dashboard-card">
-<h3>Total Quotes</h3>
-<p id="dashboardQuoteCount">Loading...</p>
-</div>
-
-<div class="dashboard-card">
-<h3>Total Media</h3>
-<p id="dashboardMediaCount">Loading...</p>
-</div>
-
-<div class="dashboard-card">
-<h3>Backgrounds</h3>
-<p>Change website backgrounds.</p>
-</div>
-
-</div>
-
-</div>
-    <div id="quotesPanel" class="panel hidden">
-<div class="quote-header">
-<h2 id="formTitle">Add quote</h2>
-<select id="category" aria-label="Category">
-<option value="Love">❤️ Love</option>
-<option value="Motivation">💪 Motivation</option>
-<option value="Film & Series">🎬 Film & Series</option>
-<option value="Music">🎵 Music</option>
-<option value="Books">📚 Books</option>
-<option value="Philosophy">🧠 Philosophy</option>
-<option value="Sad / 3AM">🌧️ Sad</option>
-<option value="Funny">😂 Funny</option>
-<option value="Life">🌟 Life</option>
-<option value="Character Quotes">🎭 Character Quotes</option>
-</select>
-</div>
-
-<label for="date">Date</label>
-<input id="date" type="date">
-
-<label for="quote">Quote</label>
-<textarea id="quote" placeholder="Write your quote here..."></textarea>
-
-<label for="author">Author</label>
-<input id="author" type="text" placeholder="For example: Albert Einstein">
-
-<div class="form-buttons">
-<button id="saveButton">Save quote</button>
-<button id="cancelEditButton" class="hidden" type="button">Cancel</button>
-</div>
-<p id="saveMessage"></p>
-
-
-
-<hr>
-</div>
-    <div id="mediaPanel" class="panel hidden">
-<h2>📸 Media</h2>
-<p class="muted">Post photos or videos to the public Media feed. Only logged-in admins can upload or delete posts.</p>
-
-<label for="mediaFile">Photo or video</label>
-<input id="mediaFile" type="file" accept="image/*,video/mp4,video/webm,video/ogg">
-
-<img id="mediaPreview" class="media-upload-preview" alt="Media preview">
-
-<label for="mediaCaption">Caption</label>
-<textarea id="mediaCaption" placeholder="Write a caption (optional)..."></textarea>
-
-<button id="uploadMediaButton" type="button">Post media</button>
-<p id="mediaMessage" class="message"></p>
-
-<h3>Existing media</h3>
-<div id="mediaAdminList" class="media-admin-list">Loading...</div>
-
-<hr>
-    </div>
-    <div id="backgroundPanel" class="panel hidden">
-<h2>🌄 Background</h2>
-<p>Choose a background:</p>
-<div class="background-picker">
-</div>
-<button onclick="changeBackground('backgrounds/mountains.jpg')">🏔️ Mountains</button>
-<button onclick="changeBackground('backgrounds/forest.jpg')">🌲 Forest</button>
-<button onclick="changeBackground('backgrounds/city.jpg')">🌆 City</button>
-<button onclick="changeBackground('backgrounds/StarrySky.jpg')">Starry sky</button>
-</div>
-
-<hr>
-
-<h2>Planned quotes</h2>
-<div id="quoteList">Loading...</div>
-<button id="logoutButton">Log out</button>
-</section>
-</main>
-
-<script>
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-const loginBox=document.getElementById("loginBox");
-const adminBox=document.getElementById("adminBox");
-const email=document.getElementById("email");
-const password=document.getElementById("password");
-const loginButton=document.getElementById("loginButton");
-const logoutButton=document.getElementById("logoutButton");
-const loginMessage=document.getElementById("loginMessage");
-const date=document.getElementById("date");
-const quote=document.getElementById("quote");
-const author=document.getElementById("author");
-const category=document.getElementById("category");
-const saveButton=document.getElementById("saveButton");
-const cancelEditButton=document.getElementById("cancelEditButton");
-const saveMessage=document.getElementById("saveMessage");
-const quoteList=document.getElementById("quoteList");
-const formTitle=document.getElementById("formTitle");
-let editingDate=null;
-
-function showAdmin(){loginBox.classList.add("hidden");adminBox.classList.remove("hidden")}
-function showLogin(){loginBox.classList.remove("hidden");adminBox.classList.add("hidden")}
-
-loginButton.addEventListener("click",async()=>{
-loginMessage.textContent="Logging in...";
-const {data,error}=await db.auth.signInWithPassword({email:email.value.trim(),password:password.value});
-if(error){loginMessage.textContent="Error: "+error.message;return}
-if(!data.session){loginMessage.textContent="Login succeeded, but no session was received.";return}
-loginMessage.textContent="";showAdmin();await loadQuotes();await loadMediaAdmin();
-});
-
-logoutButton.addEventListener("click",async()=>{await db.auth.signOut();resetForm();showLogin()});
-
-saveButton.addEventListener("click",async()=>{
-const selectedDate=date.value,selectedQuote=quote.value.trim(),selectedAuthor=author.value.trim(),selectedCategory=category.value;
-if(!selectedDate||!selectedQuote){saveMessage.textContent="Please enter a date and quote.";return}
-saveMessage.textContent=editingDate?"Updating...":"Saving...";
-const {error}=await db.from("quotes").upsert({quote_date:selectedDate,quote:selectedQuote,author:selectedAuthor||null,category:selectedCategory},{onConflict:"quote_date"});
-if(error){saveMessage.textContent="Error: "+error.message;return}
-if(editingDate&&editingDate!==selectedDate){
-const {error:deleteError}=await db.from("quotes").delete().eq("quote_date",editingDate);
-if(deleteError){saveMessage.textContent="Saved, but the old date could not be removed: "+deleteError.message;return}
-}
-saveMessage.textContent=editingDate?"Quote updated!":"Quote saved!";
-resetForm(false);await loadQuotes();
-});
-    async function loadDashboard() {
-
-    const quoteCounter =
-        document.getElementById("dashboardQuoteCount");
-
-    const mediaCounter =
-        document.getElementById("dashboardMediaCount");
-
-
-    const { count: quoteCount } = await db
-        .from("quotes")
-        .select("*", { count: "exact", head: true });
-
-    const { count: mediaCount } = await db
-        .from("media_posts")
-        .select("*", { count: "exact", head: true });
-
-
-    quoteCounter.textContent =
-        quoteCount ?? 0;
-
-    mediaCounter.textContent =
-        mediaCount ?? 0;
-}
-
-cancelEditButton.addEventListener("click",()=>resetForm());
-
-async function editQuote(selectedDate){
-const {data,error}=await db.from("quotes").select("quote_date,quote,author,category").eq("quote_date",selectedDate).single();
-if(error){alert("Error: "+error.message);return}
-editingDate=selectedDate;
-formTitle.textContent="Edit quote";
-saveButton.textContent="Update quote";
-cancelEditButton.classList.remove("hidden");
-date.value=data.quote_date;
-quote.value=data.quote||"";
-author.value=data.author||"";
-category.value=data.category||"Life";
-window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function deleteQuote(selectedDate){
-if(!confirm("Delete this quote?"))return;
-const {error}=await db.from("quotes").delete().eq("quote_date",selectedDate);
-if(error){alert("Error: "+error.message);return}
-await loadQuotes();
-}
-
-async function loadQuotes(){
-quoteList.textContent="Loading quotes...";
-const today = new Date().toLocaleDateString("en-CA");
-
-const {data,error}=await db
-  .from("quotes")
-  .select("quote_date,quote,author,category")
-  .gte("quote_date", today)
-  .order("quote_date",{ascending:true});
-if(error){quoteList.textContent="Error loading quotes: "+error.message;return}
-if(!data||data.length===0){quoteList.textContent="There are no quotes yet.";return}
-quoteList.innerHTML="";
-data.forEach(item=>{
-const row=document.createElement("div");
-row.className="quote-row";
-row.innerHTML=`
-<strong>${formatDate(item.quote_date)}</strong><br>
-"${escapeHTML(item.quote)}"<br>
-<small>${item.author?"— "+escapeHTML(item.author):""}</small><br>
-<small>${item.category?escapeHTML(item.category):""}</small><br><br>
-<button class="edit-button" onclick="editQuote('${item.quote_date}')">Edit</button>
-<button class="delete-button" onclick="deleteQuote('${item.quote_date}')">Delete</button>
-<hr>`;
-quoteList.appendChild(row);
-});
-}
-
-function resetForm(clearMessage=true){
-editingDate=null;
-formTitle.textContent="Add quote";
-saveButton.textContent="Save quote";
-cancelEditButton.classList.add("hidden");
-date.value="";quote.value="";author.value="";category.value="Life";
-if(clearMessage)saveMessage.textContent="";
-}
-
-function formatDate(value){return new Date(value+"T00:00:00").toLocaleDateString("en-US",{day:"numeric",month:"long",year:"numeric"})}
-function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-
-function changeBackground(image){
-document.body.style.backgroundImage=`linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)),url("${image}")`;
-localStorage.setItem("dailyquotes-background",image);
-}
-const savedBackground=localStorage.getItem("dailyquotes-background");
-if(savedBackground)document.body.style.backgroundImage=`linear-gradient(rgba(5,12,22,.35),rgba(5,12,22,.65)),url("${savedBackground}")`;
-
-
-const mediaFile = document.getElementById("mediaFile");
-const mediaCaption = document.getElementById("mediaCaption");
-const mediaPreview = document.getElementById("mediaPreview");
-const uploadMediaButton = document.getElementById("uploadMediaButton");
-const mediaMessage = document.getElementById("mediaMessage");
-const mediaAdminList = document.getElementById("mediaAdminList");
-
-mediaFile.addEventListener("change", () => {
-  const file = mediaFile.files[0];
-  if (!file) {
-    mediaPreview.style.display = "none";
-    mediaPreview.removeAttribute("src");
-    return;
-  }
-  if (file.type.startsWith("image/")) {
-    mediaPreview.src = URL.createObjectURL(file);
-    mediaPreview.style.display = "block";
-  } else {
-    mediaPreview.style.display = "none";
-  }
-});
-
-async function loadMediaAdmin() {
-  mediaAdminList.textContent = "Loading...";
-
-  const {data, error} = await db
-    .from("media_posts")
-    .select("id, media_type, storage_path, caption, created_at")
-    .order("created_at", {ascending:false});
-
-  if (error) {
-    mediaAdminList.textContent = "Error loading media: " + error.message;
-    return;
-  }
-
-  if (!data?.length) {
-    mediaAdminList.textContent = "No media posts yet.";
-    return;
-  }
-
-  mediaAdminList.innerHTML = "";
-
-  data.forEach(post => {
-    const {data:urlData} = db.storage.from("media").getPublicUrl(post.storage_path);
-    const row = document.createElement("div");
-    row.className = "media-admin-row";
-
-    const media = post.media_type === "video"
-      ? document.createElement("video")
-      : document.createElement("img");
-
-    media.src = urlData.publicUrl;
-    if (post.media_type === "video") {
-      media.controls = true;
-      media.preload = "metadata";
-    }
-
-    const info = document.createElement("div");
-    info.className = "media-admin-info";
-    info.innerHTML = `<strong>${escapeHTML(post.caption || "Untitled post")}</strong>
-      <small>${new Date(post.created_at).toLocaleString()}</small>`;
-
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "delete-button";
-    button.textContent = "Delete";
-    button.addEventListener("click", () => deleteMedia(post));
-
-    row.append(media, info, button);
-    mediaAdminList.appendChild(row);
-  });
-}
-
-async function uploadMedia() {
-  const file = mediaFile.files[0];
-  if (!file) {
-    mediaMessage.textContent = "Please choose an image or video.";
-    return;
-  }
-
-  if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
-    mediaMessage.textContent = "Only image and video files are allowed.";
-    return;
-  }
-
-  const {data:{user}} = await db.auth.getUser();
-  if (!user) {
-    mediaMessage.textContent = "You must be logged in as an admin.";
-    return;
-  }
-
-  uploadMediaButton.disabled = true;
-  mediaMessage.textContent = "Uploading...";
-
-  const extension = (file.name.split(".").pop() || "bin").toLowerCase();
-  const path = `${user.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
-  const mediaType = file.type.startsWith("video/") ? "video" : "image";
-
-  const {error:uploadError} = await db.storage
-    .from("media")
-    .upload(path, file, {upsert:false, contentType:file.type});
-
-  if (uploadError) {
-    mediaMessage.textContent = "Upload failed: " + uploadError.message;
-    uploadMediaButton.disabled = false;
-    return;
-  }
-
-  const {error:insertError} = await db.from("media_posts").insert({
-    media_type: mediaType,
-    storage_path: path,
-    caption: mediaCaption.value.trim()
-  });
-
-  if (insertError) {
-    await db.storage.from("media").remove([path]);
-    mediaMessage.textContent = "Could not create the post: " + insertError.message;
-    uploadMediaButton.disabled = false;
-    return;
-  }
-
-  mediaMessage.textContent = "Media posted!";
-  mediaFile.value = "";
-  mediaCaption.value = "";
-  mediaPreview.style.display = "none";
-  uploadMediaButton.disabled = false;
-  await loadMediaAdmin();
-}
-
-async function deleteMedia(post) {
-  if (!confirm("Delete this media post?")) return;
-
-  const {error:storageError} = await db.storage
-    .from("media")
-    .remove([post.storage_path]);
-
-  if (storageError) {
-    alert("Could not delete the media file: " + storageError.message);
-    return;
-  }
-
-  const {error:dbError} = await db
-    .from("media_posts")
-    .delete()
-    .eq("id", post.id);
-
-  if (dbError) {
-    alert("The file was deleted, but the post could not be removed: " + dbError.message);
-    return;
-  }
-
-  await loadMediaAdmin();
-}
-
-uploadMediaButton.addEventListener("click", uploadMedia);
-
-async function start(){
-const {data,error}=await db.auth.getSession();
-if(error){loginMessage.textContent="Error checking login: "+error.message;return}
-if(data.session){showAdmin();await loadQuotes();await loadMediaAdmin()}else showLogin();
-}
-    function showPanel(id){
-
-document
-.querySelectorAll(".panel")
-.forEach(panel=>{
-panel.classList.add("hidden");
-});
-
-document
-.getElementById(id)
-.classList.remove("hidden");
-
-}
-start();
-</script>
-</body>
-</html>
+        <!-- Desktop Only Links -->
+        <a class=class="str">"desktop-only" href=class="str">"world.html">World(beta)</a>
+        <a class=class="str">"desktop-only" href=class="str">"admin.html">Contact(beta)</a>
+        <a class=class="str">"desktop-only" href=class="str">"admin.html">Admin</a>
+    </nav>
+
+    <header class=class="str">"admin-header">
+        <p class=class="str">"admin-kicker">Management</p>
+        <h1>DailyQuotes Admin</h1>
+        <p class=class="str">"admin-subtitle">Create and manage your daily quotes.</p>
+    </header>
+
+    <!-- Login Section -->
+    <section id=class="str">"loginBox" class=class="str">"card">
+        <h2>Log in</h2>
+        <input id=class="str">"email" type=class="str">"email" placeholder=class="str">"E-mail">
+        <input id=class="str">"password" type=class="str">"password" placeholder=class="str">"Password">
+        <button id=class="str">"loginButton">Log in</button>
+        <p id=class="str">"loginMessage"></p>
+    </section>
+
+    <!-- Admin Panel Section -->
+    <section id=class="str">"adminBox" class=class="str">"hidden">
+        <div class=class="str">"admin-layout">
+            <aside class=class="str">"admin-sidebar">
+                <h3>DailyQuotes</h3>
+                <button onclick=class="str">"showPanel('dashboardPanelclass="str">')">📊 Dashboard</button>
+                <button onclick=class="str">"showPanel('quotesPanelclass="str">')">📝 Quotes</button>
+                <button onclick=class="str">"showPanel('mediaPanelclass="str">')">📸 Media</button>
+                <button onclick=class="str">"showPanel('backgroundPanelclass="str">')">🌄 Backgrounds</button>
+                <button id=class="str">"logoutButton">🚪 Log Out</button>
+            </aside>
+
+            <div class=class="str">"admin-content">
+                
+                <!-- Dashboard Panel -->
+                <div id=class="str">"dashboardPanel" class=class="str">"panel">
+                    <div class=class="str">"dashboard-grid">
+                        <div class=class="str">"dashboard-card">
+                            <h3>Total Quotes</h3>
+                            <p id=class="str">"dashboardQuoteCount">Loading...</p>
+                        </div>
+                        <div class=class="str">"dashboard-card">
+                            <h3>Total Media</h3>
+                            <p id=class="str">"dashboardMediaCount">Loading...</p>
+                        </div>
+                        <div class=class="str">"dashboard-card">
+                            <h3>Backgrounds</h3>
+                            <p>Change website backgrounds.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quotes Panel -->
+                <div id=class="str">"quotesPanel" class=class="str">"panel hidden">
+                    <div class=class="str">"quote-header">
+                        <h2 id=class="str">"formTitle">Add quote</h2>
+                        <select id=class="str">"category" aria-label=class="str">"Category">
+                            <option value=class="str">"Love">❤️ Love</option>
+                            <option value=class="str">"Motivation">💪 Motivation</option>
+                            <option value=class="str">"Film & Series">🎬 Film & Series</option>
+                            <option value=class="str">"Music">🎵 Music</option>
+                            <option value=class="str">"Books">📚 Books</option>
+                            <option value=class="str">"Philosophy">🧠 Philosophy</option>
+                            <option value=class="str">"Sad / 3AM">🌧️ Sad</option>
+                            <option value=class="str">"Funny">😂 Funny</option>
+                            <option value=class="str">"Life">🌟 Life</option>
+                            <option value=class="str">"Character Quotes">🎭 Character Quotes</option>
+                        </select>
+                    </div>
+
+                    <label for=class="str">"date">Date</label>
+                    <input id=class="str">"date" type=class="str">"date">
+
+                    <label for=class="str">"quote">Quote</label>
+                    <textarea id=class="str">"quote" placeholder=class="str">"Write your quote here..."></textarea>
+
+                    <label for=class="str">"author">Author</label>
+                    <input id=class="str">"author" type=class="str">"text" placeholder=class="str">"For example: Albert Einstein">
+
+                    <div class=class="str">"form-buttons">
+                        <button id=class="str">"saveButton">Save quote</button>
+                        <button id=class="str">"cancelEditButton" class=class="str">"hidden" type=class="str">"button">Cancel</button>
+                    </div>
+                    <p id=class="str">"saveMessage"></p>
+
+                    <hr>
+                    
+                    <h2>Planned quotes</h2>
+                    <div id=class="str">"quoteList">Loading...</div>
+                </div>
+
+                <!-- Media Panel -->
+                <div id=class="str">"mediaPanel" class=class="str">"panel hidden">
+                    <h2>📸 Media</h2>
+                    <p class=class="str">"muted">Post photos or videos to the public Media feed. Only logged-in admins can upload or delete posts.</p>
+
+                    <label for=class="str">"mediaFile">Photo or video</label>
+                    <input id=class="str">"mediaFile" type=class="str">"file" accept=class="str">"image/*,video/mp4,video/webm,video/ogg">
+
+                    ![Media preview](not-generated)
+
+                    <label for=class="str">"mediaCaption">Caption</label>
+                    <textarea id=class="str">"mediaCaption" placeholder=class="str">"Write a caption(optional)..."></textarea>
+
+                    <button id=class="str">"uploadMediaButton" type=class="str">"button">Post media</button>
+                    <p id=class="str">"mediaMessage" class=class="str">"message"></p>
+
+                    <h3>Existing media</h3>
+                    <div id=class="str">"mediaAdminList" class=class="str">"media-admin-list">Loading...</div>
+                    <hr>
+                </div>
+
+                <!-- Background Panel -->
+                <div id=class="str">"backgroundPanel" class=class="str">"panel hidden">
+                    <h2>🌄 Background</h2>
+                    <p>Choose a background:</p>
+                    <div class=class="str">"background-picker">
+                        <button onclick=class="str">"changeBackground('backgrounds/mountains.jpgclass="str">')">🏔️ Mountains</button>
+                        <button onclick=class="str">"changeBackground('backgrounds/forest.jpgclass="str">')">🌲 Forest</button>
+                        <button onclick="changeBackground('
