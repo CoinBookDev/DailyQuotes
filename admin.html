@@ -245,6 +245,30 @@ if(deleteError){saveMessage.textContent="Saved, but the old date could not be re
 saveMessage.textContent=editingDate?"Quote updated!":"Quote saved!";
 resetForm(false);await loadQuotes();
 });
+    async function loadDashboard() {
+
+    const quoteCounter =
+        document.getElementById("dashboardQuoteCount");
+
+    const mediaCounter =
+        document.getElementById("dashboardMediaCount");
+
+
+    const { count: quoteCount } = await db
+        .from("quotes")
+        .select("*", { count: "exact", head: true });
+
+    const { count: mediaCount } = await db
+        .from("media_posts")
+        .select("*", { count: "exact", head: true });
+
+
+    quoteCounter.textContent =
+        quoteCount ?? 0;
+
+    mediaCounter.textContent =
+        mediaCount ?? 0;
+}
 
 cancelEditButton.addEventListener("click",()=>resetForm());
 
