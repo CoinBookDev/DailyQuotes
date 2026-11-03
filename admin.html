@@ -3,10 +3,10 @@
 <nav>
 ...
 </nav>
-
+<head>
+        <link rel="stylesheet" href="style.css">
+</head>
 <main class="container">
-
-    <link rel="stylesheet" href="style.css">
     <!-- LOGIN -->
 
     <section id="loginBox" class="card">
@@ -30,17 +30,6 @@
         <p id="loginMessage"></p>
 
     </section>
-
-    function showAdmin() {
-    loginBox.classList.add("hidden");
-    adminBox.classList.remove("hidden");
-}
-
-
-    function showLogin() {
-    loginBox.classList.remove("hidden");
-    adminBox.classList.add("hidden");
-}
 
     <!-- ADMIN -->
 
@@ -263,51 +252,19 @@ Active
 Save
 
 </button>
-
-</section>
-<aside class="sidebar">
-
-<h2>DailyQuotes</h2>
-
-<button
-onclick="showPanel('dashboardPanel')">
-
-📊 Dashboard
-
-</button>
-
-<button
-onclick="showPanel('quotesPanel')">
-
-📝 Quotes
-
-</button>
-
-<button
-onclick="showPanel('mediaPanel')">
-
-📸 Media
-
-</button>
-
-<button
-onclick="showPanel('backgroundPanel')">
-
-🌄 Backgrounds
-
-</button>
-
-<button
-onclick="showPanel('announcementPanel')">
-
-📢 Announcements
-
-</button>
-
-<button id="logoutButton">
-
-🚪 Logout
-
-</button>
+</main>
 
 </aside>
+<script>
+function showAdmin() {
+    loginBox.classList.add("hidden");
+    adminBox.classList.remove("hidden");
+}
+
+function showLogin() {
+    loginBox.classList.remove("hidden");
+    adminBox.classList.add("hidden");
+}
+</script>
+
+</body>
