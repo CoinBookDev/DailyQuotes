@@ -6,6 +6,7 @@
 
 <main class="container">
 
+    <link rel="stylesheet" href="style.css">
     <!-- LOGIN -->
 
     <section id="loginBox" class="card">
@@ -30,6 +31,16 @@
 
     </section>
 
+    function showAdmin() {
+    loginBox.classList.add("hidden");
+    adminBox.classList.remove("hidden");
+}
+
+
+    function showLogin() {
+    loginBox.classList.remove("hidden");
+    adminBox.classList.add("hidden");
+}
 
     <!-- ADMIN -->
 
