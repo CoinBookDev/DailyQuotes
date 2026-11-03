@@ -1,164 +1,241 @@
-<!DOCTYPE html>
-<html lang=class="str">"en">
-<head>
-<meta charset=class="str">"UTF-class="num">8">
-<meta name=class="str">"viewport" content=class="str">"width=device-width, initial-scale=class="num">1.0">
-<title>DailyQuotes Admin</title>
-<link rel=class="str">"stylesheet" href=class="str">"style.css">
-<script src=class="str">"https:class="cmtclass="str">">//cdn.jsdelivr.net/npm/@supabase/supabase-js@class="num">2"></script>
-<script src=class="str">"config.js"></script>
-<style>
-    class=class="str">"cmt">/* Admin Specific Styles */
-    .admin-header{margin-bottom:28px}
-    .admin-kicker{margin:class="num">0 class="num">0 2px;font-size:.85rem;font-weight:class="num">700;letter-spacing:.18em;text-transform:uppercase;opacity:.class="num">72}
-    .admin-header h1{margin:class="num">0}
-    .admin-subtitle{margin:4px class="num">0 class="num">0;opacity:.class="num">72}
-    .quote-header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
-    .quote-header h2{margin:class="num">0}
-    .quote-header select{width:auto!important;min-width:150px;max-width:210px;margin:class="num">0}
-    .form-buttons{display:flex;gap:10px;flex-wrap:wrap}
-    .quote-row .delete-button{background:class=class="str">"cmt">#dc2626!important;color:#fff!important;border-color:#b91c1c!important}
-    .quote-row .delete-button:hover{background:class=class="str">"cmt">#b91c1c!important}
-    
-    class=class="str">"cmt">/* Utility for panels */
-    .hidden { display: none; }
-</style>
-</head> 
 <body>
 
-<main class=class="str">"container">
-    <nav class=class="str">"top-nav">
-        <a href=class="str">"index.html">Today</a>
-        <a href=class="str">"archive.html">Archive</a>
-        <a href=class="str">"media.html">Media</a>
+<nav>
+    ...
+</nav>
 
-        <div class=class="str">"more-menu">
-            <button id=class="str">"moreBtn">More ▼</button>
-            <div id=class="str">"moreDropdown">
-                <a href=class="str">"world.html">World(beta)</a>
-                <a href=class="str">"contact.html">Contact(beta)</a>
-                <a href=class="str">"admin.html">Admin</a>
-            </div>
-        </div>
+<main>
 
-        <!-- Desktop Only Links -->
-        <a class=class="str">"desktop-only" href=class="str">"world.html">World(beta)</a>
-        <a class=class="str">"desktop-only" href=class="str">"admin.html">Contact(beta)</a>
-        <a class=class="str">"desktop-only" href=class="str">"admin.html">Admin</a>
-    </nav>
-
-    <header class=class="str">"admin-header">
-        <p class=class="str">"admin-kicker">Management</p>
-        <h1>DailyQuotes Admin</h1>
-        <p class=class="str">"admin-subtitle">Create and manage your daily quotes.</p>
-    </header>
-
-    <!-- Login Section -->
-    <section id=class="str">"loginBox" class=class="str">"card">
-        <h2>Log in</h2>
-        <input id=class="str">"email" type=class="str">"email" placeholder=class="str">"E-mail">
-        <input id=class="str">"password" type=class="str">"password" placeholder=class="str">"Password">
-        <button id=class="str">"loginButton">Log in</button>
-        <p id=class="str">"loginMessage"></p>
+    <!-- LOGIN -->
+    <section id="loginBox">
     </section>
 
-    <!-- Admin Panel Section -->
-    <section id=class="str">"adminBox" class=class="str">"hidden">
-        <div class=class="str">"admin-layout">
-            <aside class=class="str">"admin-sidebar">
-                <h3>DailyQuotes</h3>
-                <button onclick=class="str">"showPanel('dashboardPanelclass="str">')">📊 Dashboard</button>
-                <button onclick=class="str">"showPanel('quotesPanelclass="str">')">📝 Quotes</button>
-                <button onclick=class="str">"showPanel('mediaPanelclass="str">')">📸 Media</button>
-                <button onclick=class="str">"showPanel('backgroundPanelclass="str">')">🌄 Backgrounds</button>
-                <button id=class="str">"logoutButton">🚪 Log Out</button>
-            </aside>
+    <!-- ADMIN -->
+    <section id="adminBox" class="hidden">
 
-            <div class=class="str">"admin-content">
-                
-                <!-- Dashboard Panel -->
-                <div id=class="str">"dashboardPanel" class=class="str">"panel">
-                    <div class=class="str">"dashboard-grid">
-                        <div class=class="str">"dashboard-card">
-                            <h3>Total Quotes</h3>
-                            <p id=class="str">"dashboardQuoteCount">Loading...</p>
-                        </div>
-                        <div class=class="str">"dashboard-card">
-                            <h3>Total Media</h3>
-                            <p id=class="str">"dashboardMediaCount">Loading...</p>
-                        </div>
-                        <div class=class="str">"dashboard-card">
-                            <h3>Backgrounds</h3>
-                            <p>Change website backgrounds.</p>
-                        </div>
-                    </div>
-                </div>
+        <aside class="sidebar">
 
-                <!-- Quotes Panel -->
-                <div id=class="str">"quotesPanel" class=class="str">"panel hidden">
-                    <div class=class="str">"quote-header">
-                        <h2 id=class="str">"formTitle">Add quote</h2>
-                        <select id=class="str">"category" aria-label=class="str">"Category">
-                            <option value=class="str">"Love">❤️ Love</option>
-                            <option value=class="str">"Motivation">💪 Motivation</option>
-                            <option value=class="str">"Film & Series">🎬 Film & Series</option>
-                            <option value=class="str">"Music">🎵 Music</option>
-                            <option value=class="str">"Books">📚 Books</option>
-                            <option value=class="str">"Philosophy">🧠 Philosophy</option>
-                            <option value=class="str">"Sad / 3AM">🌧️ Sad</option>
-                            <option value=class="str">"Funny">😂 Funny</option>
-                            <option value=class="str">"Life">🌟 Life</option>
-                            <option value=class="str">"Character Quotes">🎭 Character Quotes</option>
-                        </select>
-                    </div>
+            Dashboard
+            Quotes
+            Media
+            Backgrounds
+            Announcements
+            Settings
 
-                    <label for=class="str">"date">Date</label>
-                    <input id=class="str">"date" type=class="str">"date">
+        </aside>
 
-                    <label for=class="str">"quote">Quote</label>
-                    <textarea id=class="str">"quote" placeholder=class="str">"Write your quote here..."></textarea>
+        <div class="content">
 
-                    <label for=class="str">"author">Author</label>
-                    <input id=class="str">"author" type=class="str">"text" placeholder=class="str">"For example: Albert Einstein">
+            <section id="dashboardPanel">
+            </section>
 
-                    <div class=class="str">"form-buttons">
-                        <button id=class="str">"saveButton">Save quote</button>
-                        <button id=class="str">"cancelEditButton" class=class="str">"hidden" type=class="str">"button">Cancel</button>
-                    </div>
-                    <p id=class="str">"saveMessage"></p>
+            <section id="quotesPanel">
+            </section>
 
-                    <hr>
-                    
-                    <h2>Planned quotes</h2>
-                    <div id=class="str">"quoteList">Loading...</div>
-                </div>
+            <section id="mediaPanel">
+            </section>
 
-                <!-- Media Panel -->
-                <div id=class="str">"mediaPanel" class=class="str">"panel hidden">
-                    <h2>📸 Media</h2>
-                    <p class=class="str">"muted">Post photos or videos to the public Media feed. Only logged-in admins can upload or delete posts.</p>
+            <section id="backgroundPanel">
+            </section>
 
-                    <label for=class="str">"mediaFile">Photo or video</label>
-                    <input id=class="str">"mediaFile" type=class="str">"file" accept=class="str">"image/*,video/mp4,video/webm,video/ogg">
+            <section id="announcementPanel">
+            </section>
 
-                    ![Media preview](not-generated)
+        </div>
 
-                    <label for=class="str">"mediaCaption">Caption</label>
-                    <textarea id=class="str">"mediaCaption" placeholder=class="str">"Write a caption(optional)..."></textarea>
+    </section>
 
-                    <button id=class="str">"uploadMediaButton" type=class="str">"button">Post media</button>
-                    <p id=class="str">"mediaMessage" class=class="str">"message"></p>
+</main>
 
-                    <h3>Existing media</h3>
-                    <div id=class="str">"mediaAdminList" class=class="str">"media-admin-list">Loading...</div>
-                    <hr>
-                </div>
+</body>
+<section id="dashboardPanel" class="panel">
 
-                <!-- Background Panel -->
-                <div id=class="str">"backgroundPanel" class=class="str">"panel hidden">
-                    <h2>🌄 Background</h2>
-                    <p>Choose a background:</p>
-                    <div class=class="str">"background-picker">
-                        <button onclick=class="str">"changeBackground('backgrounds/mountains.jpgclass="str">')">🏔️ Mountains</button>
-                        <button onclick=class="str">"changeBackground('backgrounds/forest.jpgclass="str">')">🌲 Forest</button>
-                        <button onclick="changeBackground('
+<h2>Dashboard</h2>
+
+<div class="stats-grid">
+
+    <div class="card">
+        <h3>Total Quotes</h3>
+        <p id="quoteCount">
+            Loading...
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>Total Media</h3>
+        <p id="mediaCount">
+            Loading...
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>Next Quote</h3>
+        <p id="nextQuote">
+            Loading...
+        </p>
+    </div>
+
+</div>
+
+</section>
+<section id="quotesPanel"
+         class="panel hidden">
+
+<h2>Add Quote</h2>
+
+<input type="date"
+       id="date">
+
+<textarea
+    id="quote">
+</textarea>
+
+<input
+    id="author">
+
+<select id="category">
+
+<option>Love</option>
+<option>Life</option>
+
+</select>
+
+<button id="saveButton">
+Save Quote
+</button>
+
+<hr>
+
+<div id="quoteList">
+</div>
+
+</section>
+<section id="mediaPanel"
+         class="panel hidden">
+
+<h2>Media</h2>
+
+<input
+    type="file"
+    id="mediaFile">
+
+<textarea
+    id="mediaCaption">
+</textarea>
+
+<button
+    id="uploadMediaButton">
+
+Post Media
+
+</button>
+
+<div id="mediaAdminList">
+
+</div>
+
+</section>
+<section id="backgroundPanel"
+         class="panel hidden">
+
+<h2>Backgrounds</h2>
+
+<div class="background-grid">
+
+<button>
+🏔️ Mountains
+</button>
+
+<button>
+🌲 Forest
+</button>
+
+<button>
+🌆 City
+</button>
+
+<button>
+🌌 Starry Sky
+</button>
+
+</div>
+
+</section>
+<section id="announcementPanel"
+         class="panel hidden">
+
+<h2>Announcement</h2>
+
+<input
+    id="announcementTitle"
+    placeholder="Title">
+
+<textarea
+    id="announcementText"
+    placeholder="Message">
+</textarea>
+
+<label>
+
+<input
+ type="checkbox"
+ id="announcementActive">
+
+Active
+
+</label>
+
+<button
+ id="saveAnnouncement">
+
+Save
+
+</button>
+
+</section>
+<aside class="sidebar">
+
+<h2>DailyQuotes</h2>
+
+<button
+onclick="showPanel('dashboardPanel')">
+
+📊 Dashboard
+
+</button>
+
+<button
+onclick="showPanel('quotesPanel')">
+
+📝 Quotes
+
+</button>
+
+<button
+onclick="showPanel('mediaPanel')">
+
+📸 Media
+
+</button>
+
+<button
+onclick="showPanel('backgroundPanel')">
+
+🌄 Backgrounds
+
+</button>
+
+<button
+onclick="showPanel('announcementPanel')">
+
+📢 Announcements
+
+</button>
+
+<button id="logoutButton">
+
+🚪 Logout
+
+</button>
+
+</aside>
