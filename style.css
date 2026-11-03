@@ -770,6 +770,7 @@ font-size:.9rem;
     display:flex;
     gap:25px;
     align-items:flex-start;
+    width: 100%;
 }
 
 .admin-sidebar{
