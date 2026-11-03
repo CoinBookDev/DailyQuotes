@@ -71,7 +71,60 @@ if (moreBtn && moreDropdown) {
 <p id="loginMessage"></p>
 </section>
 
-<section id="adminBox" class="card hidden">
+<section id="adminBox" class="hidden">
+
+<div class="admin-layout">
+
+<aside class="admin-sidebar">
+
+<h3>DailyQuotes</h3>
+
+<button onclick="showPanel('dashboardPanel')">
+📊 Dashboard
+</button>
+
+<button onclick="showPanel('quotesPanel')">
+📝 Quotes
+</button>
+
+<button onclick="showPanel('mediaPanel')">
+📸 Media
+</button>
+
+<button onclick="showPanel('backgroundPanel')">
+🌄 Backgrounds
+</button>
+
+<button id="logoutButton">
+🚪 Log Out
+</button>
+
+</aside>
+
+<div class="admin-content">
+    <div id="dashboardPanel" class="panel">
+
+<div class="dashboard-grid">
+
+<div class="dashboard-card">
+<h3>Quotes</h3>
+<p>Manage all planned quotes.</p>
+</div>
+
+<div class="dashboard-card">
+<h3>Media</h3>
+<p>Upload photos and videos.</p>
+</div>
+
+<div class="dashboard-card">
+<h3>Backgrounds</h3>
+<p>Change website backgrounds.</p>
+</div>
+
+</div>
+
+</div>
+    <div id="quotesPanel" class="panel hidden">
 <div class="quote-header">
 <h2 id="formTitle">Add quote</h2>
 <select id="category" aria-label="Category">
@@ -106,7 +159,8 @@ if (moreBtn && moreDropdown) {
 
 
 <hr>
-
+</div>
+    <div id="mediaPanel" class="panel hidden">
 <h2>📸 Media</h2>
 <p class="muted">Post photos or videos to the public Media feed. Only logged-in admins can upload or delete posts.</p>
 
@@ -125,10 +179,12 @@ if (moreBtn && moreDropdown) {
 <div id="mediaAdminList" class="media-admin-list">Loading...</div>
 
 <hr>
-
+    </div>
+    <div id="backgroundPanel" class="panel hidden">
 <h2>🌄 Background</h2>
 <p>Choose a background:</p>
 <div class="background-picker">
+</div>
 <button onclick="changeBackground('backgrounds/mountains.jpg')">🏔️ Mountains</button>
 <button onclick="changeBackground('backgrounds/forest.jpg')">🌲 Forest</button>
 <button onclick="changeBackground('backgrounds/city.jpg')">🌆 City</button>
@@ -420,6 +476,19 @@ async function start(){
 const {data,error}=await db.auth.getSession();
 if(error){loginMessage.textContent="Error checking login: "+error.message;return}
 if(data.session){showAdmin();await loadQuotes();await loadMediaAdmin()}else showLogin();
+}
+    function showPanel(id){
+
+document
+.querySelectorAll(".panel")
+.forEach(panel=>{
+panel.classList.add("hidden");
+});
+
+document
+.getElementById(id)
+.classList.remove("hidden");
+
 }
 start();
 </script>
