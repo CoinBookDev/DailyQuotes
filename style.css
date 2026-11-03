@@ -747,7 +747,7 @@ font-size:.9rem;
 }
 
 .announcement-box {
-  position: fixed;
+  position: relative;
   left: 30px;
   top: 260px;
 
