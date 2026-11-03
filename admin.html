@@ -1,44 +1,105 @@
 <body>
 
 <nav>
-    ...
+...
 </nav>
 
-<main>
+<main class="container">
 
     <!-- LOGIN -->
-    <section id="loginBox">
+
+    <section id="loginBox" class="card">
+
+        <h2>Admin Login</h2>
+
+        <input
+            id="email"
+            type="email"
+            placeholder="Email">
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Password">
+
+        <button id="loginButton">
+            Log In
+        </button>
+
+        <p id="loginMessage"></p>
+
     </section>
 
+
     <!-- ADMIN -->
+
     <section id="adminBox" class="hidden">
 
         <aside class="sidebar">
 
-            Dashboard
-            Quotes
-            Media
-            Backgrounds
-            Announcements
-            Settings
+            <h2>DailyQuotes</h2>
+
+            <button onclick="showPanel('dashboardPanel')">
+                📊 Dashboard
+            </button>
+
+            <button onclick="showPanel('quotesPanel')">
+                📝 Quotes
+            </button>
+
+            <button onclick="showPanel('mediaPanel')">
+                📸 Media
+            </button>
+
+            <button onclick="showPanel('backgroundPanel')">
+                🌄 Backgrounds
+            </button>
+
+            <button onclick="showPanel('announcementPanel')">
+                📢 Announcements
+            </button>
+
+            <button id="logoutButton">
+                🚪 Logout
+            </button>
 
         </aside>
 
         <div class="content">
 
-            <section id="dashboardPanel">
+            <!-- dashboard -->
+
+            <section id="dashboardPanel"
+                     class="panel">
+
             </section>
 
-            <section id="quotesPanel">
+            <!-- quotes -->
+
+            <section id="quotesPanel"
+                     class="panel hidden">
+
             </section>
 
-            <section id="mediaPanel">
+            <!-- media -->
+
+            <section id="mediaPanel"
+                     class="panel hidden">
+
             </section>
 
-            <section id="backgroundPanel">
+            <!-- backgrounds -->
+
+            <section id="backgroundPanel"
+                     class="panel hidden">
+
             </section>
 
-            <section id="announcementPanel">
+            <!-- announcements -->
+
+            <section id="announcementPanel"
+                     class="panel hidden">
+
             </section>
 
         </div>
