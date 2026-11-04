@@ -124,7 +124,13 @@ async function checkAdmin() {
 // 5. LOGIN
 // ==========================================
 
-loginButton.addEventListener("click", login);
+loginButton.addEventListener("click", () => {
+
+    alert("JavaScript is working!");
+
+    login();
+
+});
 
 
 async function login() {
