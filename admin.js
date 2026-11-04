@@ -589,16 +589,17 @@ async function initializeAdmin() {
 
         }
 
-    } catch (error) {
+   } catch (error) {
 
-        console.error("Admin initialization error:", error);
+    showLogin();
 
-        showLogin();
+    showMessage(
+        "loginMessage",
+        "ERROR: " + error.message
+    );
 
-        showMessage(
-            "loginMessage",
-            "Something went wrong. Check the console."
-        );
+}
+    
 
     }
 
