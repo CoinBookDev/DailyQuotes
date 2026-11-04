@@ -273,5 +273,30 @@ function showLogin() {
 </script>
 
 <script src="config.js"></script>
- 
+
+<script>
+document.getElementById("loginButton").addEventListener("click", async () => {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) {
+        document.getElementById("loginMessage").textContent =
+            error.message;
+        return;
+    }
+
+    document.getElementById("loginBox")
+        .classList.add("hidden");
+
+    document.getElementById("adminBox")
+        .classList.remove("hidden");
+});
+</script>
+        
 </body>
