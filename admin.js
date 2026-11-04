@@ -1,4 +1,13 @@
 alert("ADMIN.JS HAS LOADED!");
+window.onerror = function(message, source, line, column) {
+
+    alert(
+        "JAVASCRIPT ERROR:\n" +
+        message +
+        "\nLine: " + line
+    );
+
+};
 // ==========================================
 // DAILYQUOTES ADMIN
 // ==========================================
