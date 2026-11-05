@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Behind the Silence | DailyQuotes</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #101114;
+    color: #eeeeee;
+    line-height: 1.6;
+}
+
+/* NAVIGATION */
+nav {
+    padding: 20px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #292a30;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+nav a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: white;
+}
+
+/* HERO */
+.hero {
+    min-height: 440px;
+    padding: 100px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background:
+        linear-gradient(rgba(10,12,16,.55), rgba(10,12,16,.95)),
+        url("https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=1600");
+    background-size: cover;
+    background-position: center;
+}
+
+.hero .label {
+    color: #aaa;
+    letter-spacing: 5px;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 7vw, 72px);
+    letter-spacing: 3px;
+    font-weight: 500;
+}
+
+.hero p {
+    color: #c0c0c0;
+    max-width: 550px;
+    margin-top: 20px;
+    font-size: 17px;
+}
+
+/* GENERAL */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 70px 25px;
+}
+
+.section-title {
+    font-size: 27px;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.section-subtitle {
+    color: #999;
+    margin-bottom: 35px;
+    font-size: 14px;
+}
+
+/* FEATURED QUOTE */
+.featured {
+    background: #1a1c22;
+    border: 1px solid #30323a;
+    padding: 45px 30px;
+    text-align: center;
+    border-radius: 12px;
+}
+
+.featured blockquote {
+    font-size: clamp(22px, 4vw, 34px);
+    font-style: italic;
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.5;
+}
+
+.featured span {
+    display: block;
+    margin-top: 25px;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+/* THEMES */
+.themes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.theme {
+    background: #1a1c22;
+    border: 1px solid #30323a;
+    padding: 25px 15px;
+    border-radius: 10px;
+}
+
+.theme h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.theme p {
+    font-size: 13px;
+    color: #999;
+}
+
+/* QUOTES */
+.quotes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.quote {
+    background: #1a1c22;
+    border: 1px solid #30323a;
+    padding: 28px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.quote p {
+    font-size: 19px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.quote small {
+    color: #888;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+/* MESSAGE */
+.message {
+    text-align: center;
+    padding: 60px 25px;
+    background: #191b20;
+}
+
+.message h2 {
+    font-size: 27px;
+    margin-bottom: 15px;
+}
+
+.message p {
+    max-width: 600px;
+    margin: auto;
+    color: #aaa;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 12px;
+    border-top: 1px solid #292a30;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+    .themes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quotes {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 50px 20px;
+    }
+
+    .hero {
+        min-height: 360px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">DailyQuotes.</div>
+    <a href="index.html">← Back to home</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+    <div class="label">NOVEMBER · MENTAL HEALTH AWARENESS</div>
+    <h1>Behind the Silence.</h1>
+    <p>
+        A month dedicated to the things left unsaid.
+        The struggles people hide, the expectations
+        they carry, and the strength it takes to speak.
+    </p>
+</header>
+
+<!-- INTRODUCTION -->
+<section class="container">
+    <h2 class="section-title">More than meets the eye.</h2>
+    <p class="section-subtitle">
+        Men's mental health deserves more than a conversation once a year.
+    </p>
+
+    <p style="color:#aaa; max-width:750px;">
+        Sometimes the people who seem the strongest are the ones
+        who feel they cannot show weakness. Society often teaches
+        men to stay quiet, to keep going and to deal with everything
+        on their own.
+        <br><br>
+        But emotions aren't weaknesses. Asking for help isn't failure.
+        And nobody should feel like they have to face everything alone.
+        <br><br>
+        This November, let's talk about what often stays behind the silence.
+    </p>
+</section>
+
+<!-- FEATURED QUOTE -->
+<section class="container">
+    <div class="featured">
+        <blockquote>
+            "You don't have to be unbreakable to be strong."
+        </blockquote>
+        <span>DAILYQUOTES · NOVEMBER COLLECTION</span>
+    </div>
+</section>
+
+<!-- THEMES -->
+<section class="container">
+    <h2 class="section-title">The four sides of silence.</h2>
+    <p class="section-subtitle">
+        Four themes. One important conversation.
+    </p>
+
+    <div class="themes">
+
+        <div class="theme">
+            <h3>01. The Silence</h3>
+            <p>Loneliness, isolation and feeling misunderstood.</p>
+        </div>
+
+        <div class="theme">
+            <h3>02. The Expectations</h3>
+            <p>Pressure, masculinity and always being strong.</p>
+        </div>
+
+        <div class="theme">
+            <h3>03. The Struggle</h3>
+            <p>Identity, vulnerability and accepting emotions.</p>
+        </div>
+
+        <div class="theme">
+            <h3>04. The Way Forward</h3>
+            <p>Connection, acceptance, hope and recovery.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- QUOTES -->
+<section class="container">
+    <h2 class="section-title">Words worth remembering.</h2>
+    <p class="section-subtitle">
+        Sometimes a few words can express what we struggle to say.
+    </p>
+
+    <div class="quotes">
+
+        <div class="quote">
+            <p>"Not every quiet person is at peace."</p>
+            <small>01 · THE SILENCE</small>
+        </div>
+
+        <div class="quote">
+            <p>"Being the person everyone relies on can be a lonely place to be."</p>
+            <small>02 · THE SILENCE</small>
+        </div>
+
+        <div class="quote">
+            <p>"Strength isn't measured by how much you can carry alone."</p>
+            <small>03 · THE EXPECTATIONS</small>
+        </div>
+
+        <div class="quote">
+            <p>"A man should never have to choose between being strong and being human."</p>
+            <small>04 · THE EXPECTATIONS</small>
+        </div>
+
+        <div class="quote">
+            <p>"You can spend so long becoming who everyone needs you to be that you forget who you were."</p>
+            <small>05 · THE STRUGGLE</small>
+        </div>
+
+        <div class="quote">
+            <p>"Sometimes the hardest words to say are the ones that begin with 'I'm not okay.'"</p>
+            <small>06 · THE STRUGGLE</small>
+        </div>
+
+        <div class="quote">
+            <p>"You don't have to figure everything out today."</p>
+            <small>07 · THE WAY FORWARD</small>
+        </div>
+
+        <div class="quote">
+            <p>"Perhaps the bravest thing you can do is let someone know how you really feel."</p>
+            <small>08 · THE WAY FORWARD</small>
+        </div>
+
+    </div>
+</section>
+
+<!-- CLOSING MESSAGE -->
+<section class="message">
+    <h2>You are not alone.</h2>
+    <p>
+        You don't have to pretend everything is okay.
+        You don't have to carry everything yourself.
+        Talking to someone you trust can be a first step.
+        <br><br>
+        Check in on your friends. Listen without judging.
+        Sometimes being there makes all the difference.
+    </p>
+</section>
+
+<footer>
+    <p>DailyQuotes. · Behind the Silence · November 2026</p>
+    <p style="margin-top:8px;">Words matter. So do you.</p>
+</footer>
+
+</body>
+</html>
