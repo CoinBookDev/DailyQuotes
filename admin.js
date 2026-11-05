@@ -614,12 +614,6 @@ async function initializeAdmin() {
     );
 
 }
-    
-
-    }
-
-}
-
 
 // Start admin
 
