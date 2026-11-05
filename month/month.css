@@ -1,0 +1,51 @@
+/*=============================
+  DAILYQUOTES - MONTHLY EDITIONS
+=============================*/
+
+/*=============================
+1. General Settings
+=========================*/
+  {
+    box-sizing: border-box;
+  }
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #111116;
+  color: #eeeeee;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/*===========================
+2. Typography
+===========================*/
+
+h1, h2, h3, p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 64px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+p {
+  font-size: 16px;
+}
+
+/*======================
+3. Navigation
+====================*/
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 8%;
+}
+
