@@ -49,3 +49,42 @@ nav {
   padding: 20px 8%;
 }
 
+/*=====================
+4. Introduction
+=====================*/
+
+/*=====================
+5. Philosopher
+=====================*/
+
+/*=================
+6. Movie
+================*/
+.movie-card {
+  display: block;
+  text-decoration: none;
+  color: white;
+  background-color: #222;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.movie-card:hover {
+  background-color: #333;
+}
+
+/*===========
+7. Book
+============*/
+.book-card {
+  display: block;
+  color: white;
+  background-color: 080E70;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+
+/*=============
+8. Playlist
+==============*/
