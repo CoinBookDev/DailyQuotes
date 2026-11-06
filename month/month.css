@@ -18,6 +18,11 @@ body {
   line-height: 1.6;
 }
 
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
 /*======================
 1.1 Cards
 ==================*/
@@ -42,7 +47,7 @@ body {
     );
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
-  margin: 20px 0;
+  margin: 0;
   transition: all 0.3s ease;
 }
 
