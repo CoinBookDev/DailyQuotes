@@ -28,19 +28,21 @@ body {
 }
 
 .recommendation-card {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
   min-height: 170px;
   padding: 30px;
-  background: linear-gradient (135def,
-    rgba(35, 35, 35, 0.95),
-    rgba(22, 22, 22, 0.95)
+  background: linear-gradient(
+    135deg,
+    #1c1c20,
+    #141418
     );
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  overflow: hidden;
+  border-radius: 18px;
+  margin: 20px 0;
   transition: all 0.3s ease;
 }
 
