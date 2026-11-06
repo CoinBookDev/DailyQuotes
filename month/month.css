@@ -113,6 +113,12 @@ main {
   transition: all 0.3 ease;
 }
 
+.card-logo img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+}
+
 .philosophy-logo {
   color: #d8c5a5;
 }
