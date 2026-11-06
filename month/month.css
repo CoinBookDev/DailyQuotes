@@ -175,18 +175,22 @@ main {
 
 h1, h2, h3, p {
   margin-top: 0;
+  text-align: center;
 }
 
 h1 {
   font-size: 64px;
+  text-align: center;
 }
 
 h2 {
   font-size: 30px;
+  text-align: center;
 }
 
 p {
   font-size: 16px;
+  text-align: center;
 }
 
 /*======================
