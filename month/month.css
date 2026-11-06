@@ -57,6 +57,16 @@ main {
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
 }
 
+.recommendation-card {
+    text-align: left;
+}
+
+.recommendation-card h2,
+.recommendation-card h3,
+.recommendation-card p {
+    text-align: left;
+}
+
 .card-content {
   position: relative;
   z-index: 2;
