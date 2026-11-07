@@ -1,5 +1,4 @@
-document.getElementById("debugStatus").textContent +=
-    " | ADMIN JAVASCRIPT EXECUTED!";
+alert("NEW ADMIN.JS VERSION IS RUNNING!");
 window.onerror = function(message, source, line, column) {
 
     alert(
