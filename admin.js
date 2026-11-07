@@ -613,7 +613,6 @@ document.getElementById("saveAnnouncement")
 // ==========================================
 
 async function initializeAdmin() {
-async function initializeAdmin() {
 
     try {
 
