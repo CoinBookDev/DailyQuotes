@@ -1,0 +1,198 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DailyQuotes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <nav class="top-nav">
+      <a href="index.html">Today</a>
+      <a href="archive.html">Archive</a>
+      <a href="media.html">Media</a>
+      <a href="month/november.html">November</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">YOUR DAILY QUOTE</p>
+      <h1>DailyQuotes</h1>
+      <p class="subtitle">A little thought for every day.</p>
+    </header>
+      
+    <section class="quote-card">
+      <span id="category" class="category-badge"></span>
+      <p id="quote" class="quote">Loading...</p>
+      <p id="author" class="author"></p>
+      <p id="date" class="date"></p>
+    </section>
+
+    <p id="message" class="message"></p>
+    
+    <button id="randomQuoteButton" class="random-quote-button">
+  A QUOTE FOR YOU
+</button>
+
+    <section class="background-section">
+      <p>Background</p>
+      <div class="background-picker">
+        <button onclick="changeBackground('backgrounds/mountains.jpg')">🏔️ Mountains</button>
+        <button onclick="changeBackground('backgrounds/forest.jpg')">🌲 Forest</button>
+        <button onclick="changeBackground('backgrounds/city.jpg')">🌆 City</button>
+        <button onclick="changeBackground('backgrounds/StarrySky.jpg')">🌌 Starry Sky</button>
+      </div>
+    </section>
+    <div id="randomQuoteModal" class="random-modal hidden">
+  <div class="random-modal-content">
+    <button id="closeRandomQuote" class="random-close">&times;</button>
+
+    <p class="eyebrow">A QUOTE FOR YOU</p>
+
+    <span id="randomCategory" class="category-badge"></span>
+
+    <p id="randomQuote" class="random-quote">
+      Loading...
+    </p>
+
+    <p id="randomAuthor" class="author"></p>
+
+    <p id="randomDate" class="date"></p>
+
+    <button id="anotherRandomQuote" class="random-again-button">
+      🎲 Another quote
+    </button>
+  </div>
+</div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    function getToday() {
+      return new Date().toLocaleDateString("en-CA");
+    }
+
+    function changeBackground(image) {
+      document.body.style.backgroundImage =
+        `linear-gradient(rgba(5, 12, 22, 0.35), rgba(5, 12, 22, 0.65)), url("${image}")`;
+      localStorage.setItem("dailyquotes-background", image);
+    }
+
+    const savedBackground = localStorage.getItem("dailyquotes-background");
+    if (savedBackground) changeBackground(savedBackground);
+
+    async function loadToday() {
+      const today = getToday();
+
+      document.getElementById("date").textContent =
+        new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+
+      const { data, error } = await db
+        .from("quotes")
+        .select("quote, author, category")
+        .eq("quote_date", today)
+        .maybeSingle();
+
+      if (error) {
+        document.getElementById("quote").textContent = "Something went wrong.";
+        document.getElementById("message").textContent = error.message;
+        return;
+      }
+
+      if (!data) {
+        document.getElementById("quote").textContent = "There is no quote for today yet.";
+        document.getElementById("author").textContent = "";
+        document.getElementById("category").textContent = "";
+        return;
+      }
+
+      document.getElementById("quote").textContent = `"${data.quote}"`;
+      document.getElementById("author").textContent =
+        data.author ? `— ${data.author}` : "";
+      document.getElementById("category").textContent =
+        data.category || "Life";
+    }
+
+    loadToday();
+const randomModal = document.getElementById("randomQuoteModal");
+const randomQuoteButton = document.getElementById("randomQuoteButton");
+const closeRandomQuote = document.getElementById("closeRandomQuote");
+const anotherRandomQuote = document.getElementById("anotherRandomQuote");
+
+async function showRandomQuote() {
+  randomModal.classList.remove("hidden");
+
+  document.getElementById("randomQuote").textContent = "Loading...";
+  document.getElementById("randomAuthor").textContent = "";
+  document.getElementById("randomCategory").textContent = "";
+  document.getElementById("randomDate").textContent = "";
+
+  const today = getToday();
+
+  const { data, error } = await db
+    .from("quotes")
+    .select("quote, author, category, quote_date")
+    .lte("quote_date", today);
+
+  if (error) {
+    document.getElementById("randomQuote").textContent =
+      "Couldn't load a random quote.";
+    console.error(error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    document.getElementById("randomQuote").textContent =
+      "There aren't any archived quotes yet.";
+    return;
+  }
+
+  // Pick a random quote
+  const randomIndex = Math.floor(Math.random() * data.length);
+  const quote = data[randomIndex];
+
+  document.getElementById("randomQuote").textContent =
+    `"${quote.quote}"`;
+
+  document.getElementById("randomAuthor").textContent =
+    quote.author ? `— ${quote.author}` : "";
+
+  document.getElementById("randomCategory").textContent =
+    quote.category || "Life";
+
+  document.getElementById("randomDate").textContent =
+    new Date(quote.quote_date + "T00:00:00").toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+}
+
+randomQuoteButton.addEventListener("click", showRandomQuote);
+
+anotherRandomQuote.addEventListener("click", showRandomQuote);
+
+closeRandomQuote.addEventListener("click", () => {
+  randomModal.classList.add("hidden");
+});
+
+// Close when clicking outside the popup
+randomModal.addEventListener("click", (event) => {
+  if (event.target === randomModal) {
+    randomModal.classList.add("hidden");
+  }
+});
+  </script>
+</body>
+</html>
