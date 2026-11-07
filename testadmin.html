@@ -362,15 +362,32 @@
 
     </main>
 
-    <!-- TEST -->
-    <script>
-    alert("HTML JAVASCRIPT WORKS!");
+<p id="debugStatus" style="color: white; background: #333; padding: 15px;">
+    HTML loaded. Waiting for JavaScript...
+</p>
+
+<script>
+    document.getElementById("debugStatus").textContent =
+        "Inline JavaScript works!";
 </script>
 
-    <!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-<script src="./config.js"></script>
-<script src="/.admin.js?v=2"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    onload="document.getElementById('debugStatus').textContent += ' | Supabase loaded!'"
+    onerror="document.getElementById('debugStatus').textContent += ' | SUPABASE FAILED!'">
+</script>
+
+<script
+    src="./config.js"
+    onload="document.getElementById('debugStatus').textContent += ' | Config loaded!'"
+    onerror="document.getElementById('debugStatus').textContent += ' | CONFIG FAILED!'">
+</script>
+
+<script
+    src="./admin.js"
+    onload="document.getElementById('debugStatus').textContent += ' | Admin loaded!'"
+    onerror="document.getElementById('debugStatus').textContent += ' | ADMIN FAILED!'">
+</script>
+
 </body>
 </html>
