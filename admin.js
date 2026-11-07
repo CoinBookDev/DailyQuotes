@@ -1,4 +1,5 @@
-alert("ADMIN.JS HAS LOADED!");
+document.getElementById("debugStatus").textContent +=
+    " | ADMIN JAVASCRIPT EXECUTED!";
 window.onerror = function(message, source, line, column) {
 
     alert(
