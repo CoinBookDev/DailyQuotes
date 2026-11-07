@@ -162,11 +162,33 @@ async function login() {
 
     showMessage("loginMessage", "");
 
-    const { data, error } =
-        await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
+  let data;
+let error;
+
+try {
+
+    const result = await supabase.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    data = result.data;
+    error = result.error;
+
+} catch (err) {
+
+    console.error("Login error:", err);
+
+    showMessage(
+        "loginMessage",
+        "Could not connect to Supabase: " + err.message
+    );
+
+    loginButton.disabled = false;
+    loginButton.textContent = "Log In";
+
+    return;
+}
 
     if (error) {
 
@@ -591,30 +613,32 @@ document.getElementById("saveAnnouncement")
 // ==========================================
 
 async function initializeAdmin() {
+async function initializeAdmin() {
 
     try {
 
         const isAdmin = await checkAdmin();
 
         if (isAdmin) {
-
             await loadDashboard();
             await loadQuotes();
             await loadMedia();
-
         }
 
-   } catch (error) {
+    } catch (error) {
 
-    showLogin();
+        console.error("Admin initialization error:", error);
 
-    showMessage(
-        "loginMessage",
-        "ERROR: " + error.message
-    );
+        showLogin();
+
+        showMessage(
+            "loginMessage",
+            "ERROR: " + error.message
+        );
+
+    }
 
 }
 
 // Start admin
-
 initializeAdmin();
