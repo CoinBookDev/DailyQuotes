@@ -23,12 +23,9 @@
       <p class="subtitle">A little thought for every day.</p>
     </header>
       
-    <section class="quote-card">
-      <span id="category" class="category-badge"></span>
-      <p id="quote" class="quote">Loading...</p>
-      <p id="author" class="author"></p>
-      <p id="date" class="date"></p>
-    </section>
+<section id="quotesContainer">
+  <p>Loading today's quotes...</p>
+</section>
 
     <p id="message" class="message"></p>
     
@@ -86,42 +83,74 @@
     const savedBackground = localStorage.getItem("dailyquotes-background");
     if (savedBackground) changeBackground(savedBackground);
 
-    async function loadToday() {
-      const today = getToday();
+ 
+async function loadToday() {
+  const today = getToday();
 
-      document.getElementById("date").textContent =
-        new Date().toLocaleDateString("en-US", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        });
+  const quotesContainer = document.getElementById("quotesContainer");
 
-      const { data, error } = await db
-        .from("quotes")
-        .select("quote, author, category")
-        .eq("quote_date", today)
-        .maybeSingle();
+  const { data, error } = await db
+    .from("quotes")
+    .select("*")
+    .eq("quote_date", today)
+    .order("position", { ascending: true });
 
-      if (error) {
-        document.getElementById("quote").textContent = "Something went wrong.";
-        document.getElementById("message").textContent = error.message;
-        return;
-      }
+  if (error) {
+    quotesContainer.innerHTML =
+      `<p class="message">Something went wrong: ${error.message}</p>`;
+    return;
+  }
 
-      if (!data) {
-        document.getElementById("quote").textContent = "There is no quote for today yet.";
-        document.getElementById("author").textContent = "";
-        document.getElementById("category").textContent = "";
-        return;
-      }
+  if (!data || data.length === 0) {
+    quotesContainer.innerHTML =
+      `<p class="message">There are no quotes for today yet.</p>`;
+    return;
+  }
 
-      document.getElementById("quote").textContent = `"${data.quote}"`;
-      document.getElementById("author").textContent =
-        data.author ? `— ${data.author}` : "";
-      document.getElementById("category").textContent =
-        data.category || "Life";
+  // Display every quote scheduled for today
+  quotesContainer.innerHTML = "";
+
+  data.forEach((quote, index) => {
+    const card = document.createElement("section");
+    card.className = "quote-card";
+
+    const category = document.createElement("span");
+    category.className = "category-badge";
+    category.textContent = quote.category || "Life";
+
+    const quoteText = document.createElement("p");
+    quoteText.className = "quote";
+    quoteText.textContent = `"${quote.quote}"`;
+
+    const author = document.createElement("p");
+    author.className = "author";
+    author.textContent = quote.author
+      ? `— ${quote.author}`
+      : "";
+
+    const date = document.createElement("p");
+    date.className = "date";
+    date.textContent = new Date(
+      today + "T00:00:00"
+    ).toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    card.append(category, quoteText, author, date);
+
+    if (index === 0) {
+      card.classList.add("featured-quote");
     }
+
+    quotesContainer.appendChild(card);
+  });
+}
+
+loadToday();
+
 
     loadToday();
 const randomModal = document.getElementById("randomQuoteModal");
