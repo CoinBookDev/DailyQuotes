@@ -1,4 +1,15 @@
-alert("NEW ADMIN.JS VERSION IS RUNNING!");
+document.getElementById("debugStatus").textContent +=
+    " | ADMIN SCRIPT STARTED";
+
+alert("ADMIN SCRIPT STARTED");
+
+const loginButtonTest = document.getElementById("loginButton");
+
+if (loginButtonTest) {
+    alert("LOGIN BUTTON FOUND!");
+} else {
+    alert("LOGIN BUTTON NOT FOUND!");
+}
 window.onerror = function(message, source, line, column) {
 
     alert(
