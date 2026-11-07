@@ -1,16 +1,16 @@
-document.getElementById("debugStatus").textContent +=
-    " | ADMIN SCRIPT STARTED";
+// ==========================================
+// ADMIN.JS EXECUTION TEST
+// ==========================================
 
-alert("ADMIN SCRIPT STARTED");
+const testMessage = document.createElement("div");
 
-const loginButtonTest = document.getElementById("loginButton");
+testMessage.textContent = "ADMIN.JS IS ACTUALLY RUNNING!";
 
-if (loginButtonTest) {
-    alert("LOGIN BUTTON FOUND!");
-} else {
-    alert("LOGIN BUTTON NOT FOUND!");
-}
-window.onerror = function(message, source, line, column) {
+testMessage.style.cssText =
+    "background: green; color: white; padding: 15px; " +
+    "font-size: 18px; margin: 10px;";
+
+document.body.prepend(testMessage);
 
     alert(
         "JAVASCRIPT ERROR:\n" +
