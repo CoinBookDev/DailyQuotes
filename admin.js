@@ -14,6 +14,8 @@ const logoutButton = document.getElementById("logoutButton");
 function showAdminPanel() {
     loginScreen.style.display = "none";
     adminPanel.style.display = "block";
+
+    loadQuotes();
 }
 
 
