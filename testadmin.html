@@ -1,35 +1,393 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login Test</title>
+    <title>DailyQuotes Admin</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #101114;
+            color: #eeeeee;
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        /* LOGIN */
+
+        #loginScreen {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 380px;
+            padding: 35px;
+            background: #1b1d22;
+            border: 1px solid #303238;
+            border-radius: 12px;
+        }
+
+        .login-card h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 13px;
+            margin: 8px 0;
+            background: #292c32;
+            border: 1px solid #41444b;
+            border-radius: 6px;
+            color: white;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            background: white;
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #loginMessage {
+            text-align: center;
+            font-size: 13px;
+        }
+
+        /* ADMIN LAYOUT */
+
+        #adminPanel {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100vh;
+            background: #191b20;
+            border-right: 1px solid #303238;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: bold;
+            margin: 0 10px 8px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #858890;
+            margin: 0 10px 35px;
+        }
+
+        .nav-button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 13px;
+            margin-bottom: 5px;
+            background: transparent;
+            color: #aaaeb7;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .nav-button:hover,
+        .nav-button.active {
+            background: #30333a;
+            color: white;
+        }
+
+        .logout-button {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            width: calc(100% - 30px);
+            padding: 12px;
+            background: #292c32;
+            color: #eee;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            margin-left: 230px;
+            padding: 40px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page h1 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        .page-description {
+            color: #92959e;
+            margin-bottom: 30px;
+        }
+
+        .welcome-card {
+            background: #1b1d22;
+            border: 1px solid #303238;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .placeholder {
+            background: #1b1d22;
+            border: 1px solid #303238;
+            border-radius: 10px;
+            padding: 25px;
+            color: #92959e;
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 170px;
+            }
+
+            .main-content {
+                margin-left: 170px;
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>Admin Login Test</h1>
+    <!-- LOGIN SCREEN -->
 
-    <input
-        id="email"
-        type="email"
-        placeholder="Email"
-    >
+    <div id="loginScreen">
 
-    <br><br>
+        <div class="login-card">
 
-    <input
-        id="password"
-        type="password"
-        placeholder="Password"
-    >
+            <h1>DailyQuotes</h1>
+            <p style="text-align:center;color:#92959e;">
+                Admin Login
+            </p>
 
-    <br><br>
+            <input
+                id="email"
+                type="email"
+                placeholder="Email"
+            >
 
-    <button id="loginButton">
-        Log In
-    </button>
+            <input
+                id="password"
+                type="password"
+                placeholder="Password"
+            >
 
-    <p id="message"></p>
+            <button id="loginButton">
+                Log In
+            </button>
+
+            <p id="loginMessage"></p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ADMIN PANEL -->
+
+    <div id="adminPanel">
+
+        <aside class="sidebar">
+
+            <div class="logo">DailyQuotes</div>
+
+            <div class="subtitle">ADMINISTRATION</div>
+
+            <button class="nav-button active"
+                data-page="dashboard">
+                Dashboard
+            </button>
+
+            <button class="nav-button"
+                data-page="quotes">
+                Manage Quotes
+            </button>
+
+            <button class="nav-button"
+                data-page="scheduled">
+                Scheduled Quotes
+            </button>
+
+            <button class="nav-button"
+                data-page="backgrounds">
+                Backgrounds
+            </button>
+
+            <button class="nav-button"
+                data-page="media">
+                Media
+            </button>
+
+            <button class="nav-button"
+                data-page="announcements">
+                Announcements
+            </button>
+
+            <button id="logoutButton" class="logout-button">
+                Log Out
+            </button>
+
+        </aside>
+
+
+        <main class="main-content">
+
+            <!-- DASHBOARD -->
+
+            <section id="dashboard" class="page active">
+
+                <h1>Dashboard</h1>
+
+                <p class="page-description">
+                    Welcome to your DailyQuotes administration panel.
+                </p>
+
+                <div class="welcome-card">
+
+                    <h2>Welcome back!</h2>
+
+                    <p>
+                        Manage your quotes, scheduled content
+                        and website settings here.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- QUOTES -->
+
+            <section id="quotes" class="page">
+
+                <h1>Manage Quotes</h1>
+
+                <p class="page-description">
+                    Add, edit and organize your quotes.
+                </p>
+
+                <div class="placeholder">
+                    Quote management will appear here.
+                </div>
+
+            </section>
+
+
+            <!-- SCHEDULED -->
+
+            <section id="scheduled" class="page">
+
+                <h1>Scheduled Quotes</h1>
+
+                <p class="page-description">
+                    Manage upcoming quotes.
+                </p>
+
+                <div class="placeholder">
+                    Your scheduled quotes will appear here.
+                </div>
+
+            </section>
+
+
+            <!-- BACKGROUNDS -->
+
+            <section id="backgrounds" class="page">
+
+                <h1>Backgrounds</h1>
+
+                <p class="page-description">
+                    Manage the backgrounds used on DailyQuotes.
+                </p>
+
+                <div class="placeholder">
+                    Background management will appear here.
+                </div>
+
+            </section>
+
+
+            <!-- MEDIA -->
+
+            <section id="media" class="page">
+
+                <h1>Media</h1>
+
+                <p class="page-description">
+                    Manage your media posts.
+                </p>
+
+                <div class="placeholder">
+                    Media management will appear here.
+                </div>
+
+            </section>
+
+
+            <!-- ANNOUNCEMENTS -->
+
+            <section id="announcements" class="page">
+
+                <h1>Announcements</h1>
+
+                <p class="page-description">
+                    Manage website announcements.
+                </p>
+
+                <div class="placeholder">
+                    Announcement management will appear here.
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- SCRIPTS -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
