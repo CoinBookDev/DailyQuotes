@@ -170,3 +170,385 @@ async function checkSession() {
 }
 
 checkSession();
+
+// ==========================================
+// 7. QUOTE MANAGEMENT
+// ==========================================
+
+let quotes = [];
+let editingQuoteId = null;
+
+
+// ==========================================
+// 8. LOAD QUOTES
+// ==========================================
+
+async function loadQuotes() {
+
+    const quoteList = document.getElementById("quoteList");
+
+    quoteList.textContent = "Loading quotes...";
+
+    try {
+
+        const { data, error } = await supabaseClient
+            .from("quotes")
+            .select("*")
+            .order("quote_date", { ascending: false });
+
+        if (error) {
+            throw error;
+        }
+
+        quotes = data || [];
+
+        updateCategoryFilter();
+        renderQuotes();
+
+    } catch (error) {
+
+        quoteList.textContent =
+            "ERROR loading quotes: " + error.message;
+
+        console.error(error);
+
+    }
+
+}
+
+
+// ==========================================
+// 9. DISPLAY QUOTES
+// ==========================================
+
+function renderQuotes() {
+
+    const quoteList = document.getElementById("quoteList");
+
+    const search = document
+        .getElementById("quoteSearch")
+        .value.toLowerCase();
+
+    const category = document
+        .getElementById("categoryFilter")
+        .value;
+
+    quoteList.replaceChildren();
+
+    const filteredQuotes = quotes.filter(quote => {
+
+        const matchesSearch =
+            (quote.quote || "").toLowerCase().includes(search) ||
+            (quote.author || "").toLowerCase().includes(search);
+
+        const matchesCategory =
+            !category || quote.category === category;
+
+        return matchesSearch && matchesCategory;
+
+    });
+
+    if (filteredQuotes.length === 0) {
+
+        quoteList.textContent = "No quotes found.";
+        return;
+
+    }
+
+    filteredQuotes.forEach(quote => {
+
+        const card = document.createElement("div");
+        card.className = "quote-card";
+
+        const quoteText = document.createElement("h3");
+        quoteText.textContent = '"' + quote.quote + '"';
+
+        const meta = document.createElement("div");
+        meta.className = "quote-meta";
+
+        meta.textContent =
+            quote.author + " · " +
+            quote.category + " · " +
+            (quote.quote_date || "");
+
+        const actions = document.createElement("div");
+        actions.className = "quote-actions";
+
+        const editButton = document.createElement("button");
+        editButton.className = "edit-quote";
+        editButton.textContent = "Edit";
+
+        editButton.addEventListener("click", () => {
+            editQuote(quote);
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-quote";
+        deleteButton.textContent = "Delete";
+
+        deleteButton.addEventListener("click", () => {
+            deleteQuote(quote.id);
+        });
+
+        actions.append(editButton, deleteButton);
+
+        card.append(quoteText, meta, actions);
+
+        quoteList.appendChild(card);
+
+    });
+
+}
+
+
+// ==========================================
+// 10. CATEGORY FILTER
+// ==========================================
+
+function updateCategoryFilter() {
+
+    const filter = document.getElementById("categoryFilter");
+
+    const currentValue = filter.value;
+
+    filter.replaceChildren();
+
+    const allOption = document.createElement("option");
+    allOption.value = "";
+    allOption.textContent = "All Categories";
+
+    filter.appendChild(allOption);
+
+    const categories = [
+        ...new Set(
+            quotes.map(q => q.category).filter(Boolean)
+        )
+    ].sort();
+
+    categories.forEach(category => {
+
+        const option = document.createElement("option");
+
+        option.value = category;
+        option.textContent = category;
+
+        filter.appendChild(option);
+
+    });
+
+    filter.value = categories.includes(currentValue)
+        ? currentValue
+        : "";
+
+}
+
+
+// ==========================================
+// 11. ADD / EDIT QUOTE
+// ==========================================
+
+const quoteForm = document.getElementById("quoteForm");
+
+quoteForm.addEventListener("submit", saveQuote);
+
+async function saveQuote(event) {
+
+    event.preventDefault();
+
+    const message = document.getElementById("quoteMessage");
+    const saveButton = document.getElementById("saveQuoteButton");
+
+    const quoteData = {
+
+        quote: document.getElementById("quoteText").value.trim(),
+
+        author: document.getElementById("quoteAuthor").value.trim(),
+
+        category: document.getElementById("quoteCategory").value.trim(),
+
+        quote_date: document.getElementById("quoteDate").value
+
+    };
+
+    if (
+        !quoteData.quote ||
+        !quoteData.author ||
+        !quoteData.category ||
+        !quoteData.quote_date
+    ) {
+
+        message.textContent = "Please complete all fields.";
+        return;
+
+    }
+
+    message.textContent = "Saving...";
+
+    saveButton.disabled = true;
+
+    try {
+
+        let result;
+
+        if (editingQuoteId) {
+
+            // UPDATE EXISTING QUOTE
+
+            result = await supabaseClient
+                .from("quotes")
+                .update(quoteData)
+                .eq("id", editingQuoteId);
+
+        } else {
+
+            // INSERT NEW QUOTE
+
+            result = await supabaseClient
+                .from("quotes")
+                .insert([quoteData]);
+
+        }
+
+        if (result.error) {
+            throw result.error;
+        }
+
+        message.textContent = editingQuoteId
+            ? "Quote updated successfully!"
+            : "Quote added successfully!";
+
+        resetQuoteForm();
+
+        await loadQuotes();
+
+    } catch (error) {
+
+        message.textContent =
+            "ERROR: " + error.message;
+
+        console.error(error);
+
+    } finally {
+
+        saveButton.disabled = false;
+
+    }
+
+}
+
+
+// ==========================================
+// 12. EDIT QUOTE
+// ==========================================
+
+function editQuote(quote) {
+
+    editingQuoteId = quote.id;
+
+    document.getElementById("quoteText").value =
+        quote.quote || "";
+
+    document.getElementById("quoteAuthor").value =
+        quote.author || "";
+
+    document.getElementById("quoteCategory").value =
+        quote.category || "";
+
+    document.getElementById("quoteDate").value =
+        quote.quote_date || "";
+
+    document.getElementById("formTitle").textContent =
+        "Edit Quote";
+
+    document.getElementById("saveQuoteButton").textContent =
+        "Save Changes";
+
+    document.getElementById("cancelEditButton").style.display =
+        "inline-block";
+
+    document.getElementById("quoteMessage").textContent = "";
+
+    document.getElementById("quoteForm").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ==========================================
+// 13. DELETE QUOTE
+// ==========================================
+
+async function deleteQuote(id) {
+
+    const confirmed = confirm(
+        "Are you sure you want to delete this quote?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+
+        const { error } = await supabaseClient
+            .from("quotes")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            throw error;
+        }
+
+        if (editingQuoteId === id) {
+            resetQuoteForm();
+        }
+
+        await loadQuotes();
+
+    } catch (error) {
+
+        alert("ERROR deleting quote: " + error.message);
+
+        console.error(error);
+
+    }
+
+}
+
+
+// ==========================================
+// 14. RESET FORM
+// ==========================================
+
+function resetQuoteForm() {
+
+    quoteForm.reset();
+
+    editingQuoteId = null;
+
+    document.getElementById("formTitle").textContent =
+        "Add New Quote";
+
+    document.getElementById("saveQuoteButton").textContent =
+        "Add Quote";
+
+    document.getElementById("cancelEditButton").style.display =
+        "none";
+
+    document.getElementById("quoteMessage").textContent = "";
+
+}
+
+
+// ==========================================
+// 15. SEARCH AND FILTER EVENTS
+// ==========================================
+
+document.getElementById("quoteSearch")
+    .addEventListener("input", renderQuotes);
+
+document.getElementById("categoryFilter")
+    .addEventListener("change", renderQuotes);
+
+document.getElementById("cancelEditButton")
+    .addEventListener("click", resetQuoteForm);
