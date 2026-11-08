@@ -18,9 +18,13 @@ async function login() {
 
     try {
 
-        message.textContent =
-    "supabase: " + typeof supabase;
-        return;
+ async function login() {
+
+    message.textContent =
+        "supabase=" + typeof supabase +
+        " | auth=" + typeof supabase.auth;
+
+}
 
         const result =
             await supabase.auth.signInWithPassword({
