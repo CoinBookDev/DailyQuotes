@@ -8,3 +8,5 @@ const supabase = window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_PUBLISHABLE_KEY
 );
+alert("window.supabase = " + typeof window.supabase);
+alert("client = " + typeof supabase);
