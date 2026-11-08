@@ -186,6 +186,132 @@
                 padding: 20px;
             }
         }
+        
+/* ==========================================
+   QUOTE MANAGEMENT
+========================================== */
+
+.quote-form {
+    background: #1b1d22;
+    border: 1px solid #303238;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.quote-form h2 {
+    margin-top: 0;
+}
+
+.quote-form label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 7px;
+    font-size: 14px;
+    color: #bfc1c8;
+}
+
+.quote-form input,
+.quote-form textarea,
+.quote-toolbar input,
+.quote-toolbar select {
+    width: 100%;
+    padding: 12px;
+    background: #292c32;
+    color: white;
+    border: 1px solid #41444b;
+    border-radius: 6px;
+}
+
+.quote-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.form-buttons button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#saveQuoteButton {
+    background: white;
+    color: #111;
+}
+
+#cancelEditButton {
+    background: #41444b;
+    color: white;
+}
+
+#quoteMessage {
+    color: #bfc1c8;
+    font-size: 13px;
+}
+
+.quote-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.quote-card {
+    background: #1b1d22;
+    border: 1px solid #303238;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+.quote-card h3 {
+    margin-top: 0;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.quote-meta {
+    color: #92959e;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.quote-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.quote-actions button {
+    padding: 8px 13px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-quote {
+    background: #41444b;
+    color: white;
+}
+
+.delete-quote {
+    background: #8d3030;
+    color: white;
+}
+
+@media (max-width: 900px) {
+    .quote-toolbar {
+        grid-template-columns: 1fr;
+    }
+}
+
     </style>
 </head>
 
@@ -300,19 +426,103 @@
 
             <!-- QUOTES -->
 
-            <section id="quotes" class="page">
+           
+<section id="quotes" class="page">
 
-                <h1>Manage Quotes</h1>
+    <h1>Manage Quotes</h1>
 
-                <p class="page-description">
-                    Add, edit and organize your quotes.
-                </p>
+    <p class="page-description">
+        Add, edit and organize your quotes.
+    </p>
 
-                <div class="placeholder">
-                    Quote management will appear here.
-                </div>
+    <!-- ADD QUOTE FORM -->
 
-            </section>
+    <div class="quote-form">
+
+        <h2 id="formTitle">Add New Quote</h2>
+
+        <form id="quoteForm">
+
+            <label>Quote</label>
+            <textarea
+                id="quoteText"
+                placeholder="Enter quote..."
+                required
+            ></textarea>
+
+            <label>Author</label>
+            <input
+                id="quoteAuthor"
+                type="text"
+                placeholder="Author"
+                required
+            >
+
+            <label>Category</label>
+            <input
+                id="quoteCategory"
+                type="text"
+                placeholder="e.g. Motivation, Film, Love"
+                required
+            >
+
+            <label>Quote Date</label>
+            <input
+                id="quoteDate"
+                type="date"
+                required
+            >
+
+            <div class="form-buttons">
+
+                <button type="submit" id="saveQuoteButton">
+                    Add Quote
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelEditButton"
+                    style="display:none;"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+        <p id="quoteMessage"></p>
+
+    </div>
+
+
+    <!-- SEARCH AND FILTER -->
+
+    <div class="quote-toolbar">
+
+        <input
+            id="quoteSearch"
+            type="text"
+            placeholder="Search quotes or authors..."
+        >
+
+        <select id="categoryFilter">
+            <option value="">All Categories</option>
+        </select>
+
+    </div>
+
+
+    <!-- QUOTE LIST -->
+
+    <div id="quoteList">
+
+        <p>Loading quotes...</p>
+
+    </div>
+
+</section>
+
 
 
             <!-- SCHEDULED -->
