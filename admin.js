@@ -6,7 +6,7 @@ document
 
 async function login() {
 
-    message.textContent = "Trying login...";
+    message.textContent = "Step 1";
 
     const email =
         document.getElementById("email").value;
@@ -14,18 +14,36 @@ async function login() {
     const password =
         document.getElementById("password").value;
 
-    const { data, error } =
-        await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
+    message.textContent = "Step 2";
 
-    if (error) {
+    try {
+
+        message.textContent = "Step 3";
+
+        const result =
+            await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+
+        message.textContent = "Step 4";
+
+        console.log(result);
+
+        if (result.error) {
+
+            message.textContent =
+                "ERROR: " + result.error.message;
+
+            return;
+        }
+
         message.textContent =
-            "ERROR: " + error.message;
-        return;
-    }
+            "SUCCESS";
 
-    message.textContent =
-        "SUCCESS: " + data.user.email;
+    } catch (err) {
+
+        message.textContent =
+            "CRASH: " + err.message;
+    }
 }
