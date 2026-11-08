@@ -319,6 +319,11 @@
     color: white;
 }
 
+footer {
+       color: #4F5357;
+       position: center;
+}
+
 @media (max-width: 900px) {
     .quote-toolbar {
         grid-template-columns: 1fr;
