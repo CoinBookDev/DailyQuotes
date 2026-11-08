@@ -372,8 +372,8 @@
             </button>
 
             <button class="nav-button"
-                data-page="scheduled">
-                Scheduled Quotes
+                data-page="archive">
+                Quotes Archive
             </button>
 
             <button class="nav-button"
@@ -525,21 +525,39 @@
 
 
 
-            <!-- SCHEDULED -->
+           <!-- ARCHIVE -->
 
-            <section id="scheduled" class="page">
+<section id="archive" class="page">
 
-                <h1>Scheduled Quotes</h1>
+    <h1>Archive</h1>
 
-                <p class="page-description">
-                    Manage upcoming quotes.
-                </p>
+    <p class="page-description">
+        View all previously published quotes.
+    </p>
 
-                <div class="placeholder">
-                    Your scheduled quotes will appear here.
-                </div>
+    <!-- SEARCH AND FILTER -->
 
-            </section>
+    <div class="quote-toolbar">
+
+        <input
+            id="archiveSearch"
+            type="text"
+            placeholder="Search archived quotes..."
+        >
+
+        <select id="archiveCategoryFilter">
+            <option value="">All Categories</option>
+        </select>
+
+    </div>
+
+    <!-- ARCHIVED QUOTES -->
+
+    <div id="archiveQuoteList">
+        <p>Loading archived quotes...</p>
+    </div>
+
+</section>
 
 
             <!-- BACKGROUNDS -->
