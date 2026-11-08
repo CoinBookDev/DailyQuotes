@@ -18,7 +18,9 @@ async function login() {
 
     try {
 
-        message.textContent = "Step 3";
+        message.textContent =
+    "supabase: " + typeof supabase;
+        return;
 
         const result =
             await supabase.auth.signInWithPassword({
