@@ -185,38 +185,51 @@ let editingQuoteId = null;
 // 8. LOAD QUOTES
 // ==========================================
 
+
 async function loadQuotes() {
 
     const quoteList = document.getElementById("quoteList");
 
+    console.log("1. loadQuotes started");
+
     quoteList.textContent = "Loading quotes...";
 
     try {
+
+        console.log("2. Connecting to Supabase...");
 
         const { data, error } = await supabaseClient
             .from("quotes")
             .select("*")
             .order("quote_date", { ascending: false });
 
+        console.log("3. Supabase response received");
+
         if (error) {
+            console.error("SUPABASE ERROR:", error);
             throw error;
         }
+
+        console.log("4. Quotes received:", data);
 
         quotes = data || [];
 
         updateCategoryFilter();
         renderQuotes();
 
+        console.log("5. Quotes rendered successfully");
+
     } catch (error) {
+
+        console.error("LOAD QUOTES ERROR:", error);
 
         quoteList.textContent =
             "ERROR loading quotes: " + error.message;
 
-        console.error(error);
-
     }
 
 }
+
 
 
 // ==========================================
