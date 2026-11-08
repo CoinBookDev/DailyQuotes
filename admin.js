@@ -6,20 +6,10 @@ document
 
 async function login() {
 
-    message.textContent = "Step 1";
+    message.textContent =
+        Object.keys(supabase).join(", ");
 
-    const email =
-        document.getElementById("email").value;
-
-    const password =
-        document.getElementById("password").value;
-
-    message.textContent = "Step 2";
-
-    try {
-
- async function login() {
-
+}
     message.textContent =
         "supabase=" + typeof supabase +
         " | auth=" + typeof supabase.auth;
