@@ -6,8 +6,39 @@ document
 
 async function login() {
 
+    const email =
+        document.getElementById("email").value;
+
+    const password =
+        document.getElementById("password").value;
+
     message.textContent =
-        "supabase=" + typeof supabase +
-        " | auth=" + typeof supabase.auth;
+        "Trying login...";
+
+    try {
+
+        const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+        if (error) {
+
+            message.textContent =
+                "ERROR: " + error.message;
+
+            return;
+        }
+
+        message.textContent =
+            "SUCCESS: " + data.user.email;
+
+    } catch (err) {
+
+        message.textContent =
+            "CRASH: " + err.message;
+
+    }
 
 }
