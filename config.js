@@ -4,9 +4,12 @@ const SUPABASE_URL =
 const SUPABASE_PUBLISHABLE_KEY =
 "sb_publishable_JUgeAdSO--n3ahN3Qdr9qg_3YS0H779";
  
-const supabase = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_PUBLISHABLE_KEY
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
 );
-alert("window.supabase = " + typeof window.supabase);
-alert("client = " + typeof supabase);
+
+alert(
+    "client auth = " +
+    typeof supabaseClient.auth
+);
