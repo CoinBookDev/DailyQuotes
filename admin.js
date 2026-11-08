@@ -1,24 +1,6 @@
 // ==========================================
 // ADMIN.JS EXECUTION TEST
-// ==========================================
-
-const testMessage = document.createElement("div");
-
-testMessage.textContent = "ADMIN.JS IS ACTUALLY RUNNING!";
-
-testMessage.style.cssText =
-    "background: green; color: white; padding: 15px; " +
-    "font-size: 18px; margin: 10px;";
-
-document.body.prepend(testMessage);
-
-    alert(
-        "JAVASCRIPT ERROR:\n" +
-        message +
-        "\nLine: " + line
-    );
-
-};
+alert("START OF ADMIN.JS");
 // ==========================================
 // DAILYQUOTES ADMIN
 // ==========================================
@@ -651,4 +633,6 @@ async function initializeAdmin() {
 }
 
 // Start admin
+alert("BEFORE INITIALIZE");
 initializeAdmin();
+alert("AFTER INITIALZE");
