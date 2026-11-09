@@ -288,6 +288,11 @@ button:active {
   color: var(--muted);
 }
 
+.copyright {
+       color: #4F5357;
+       text-align: center;
+}
+
 .background-picker {
   display: flex;
   flex-wrap: wrap;
