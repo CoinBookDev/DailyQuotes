@@ -17,7 +17,38 @@ function showAdminPanel() {
 
     loadQuotes();
 }
+function updateDashboardStats() {
 
+    const today = new Date().toISOString().split("T")[0];
+
+    const totalQuotes = quotes.length;
+
+    const futureQuotes = quotes.filter(
+        q => q.quote_date >= today
+    ).length;
+
+    const pastQuotes = quotes.filter(
+        q => q.quote_date < today
+    ).length;
+
+    const categories = new Set(
+        quotes
+            .map(q => q.category)
+            .filter(Boolean)
+    ).size;
+
+    document.getElementById("totalQuotes").textContent =
+        totalQuotes;
+
+    document.getElementById("futureQuotesCount").textContent =
+        futureQuotes;
+
+    document.getElementById("pastQuotesCount").textContent =
+        pastQuotes;
+
+    document.getElementById("categoryCount").textContent =
+        categories;
+}
 
 // ==========================================
 // 2. SHOW LOGIN SCREEN
@@ -216,6 +247,7 @@ async function loadQuotes() {
 
         updateCategoryFilter();
         renderQuotes();
+        updateDashboardStats();
 
         console.log("5. Quotes rendered successfully");
 
