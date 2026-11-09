@@ -50,6 +50,42 @@ function updateDashboardStats() {
         categories;
 }
 
+  async function loadToday() {
+      const today = getToday();
+
+      document.getElementById("date").textContent =
+        new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+
+      const { data, error } = await db
+        .from("quotes")
+        .select("quote, author, category")
+        .eq("quote_date", today)
+        .maybeSingle();
+
+      if (error) {
+        document.getElementById("quote").textContent = "Something went wrong.";
+        document.getElementById("message").textContent = error.message;
+        return;
+      }
+
+      if (!data) {
+        document.getElementById("quote").textContent = "There is no quote for today yet.";
+        document.getElementById("author").textContent = "";
+        document.getElementById("category").textContent = "";
+        return;
+      }
+
+      document.getElementById("quote").textContent = `"${data.quote}"`;
+      document.getElementById("author").textContent =
+        data.author ? `— ${data.author}` : "";
+      document.getElementById("category").textContent =
+        data.category || "Life";
+    }
 // ==========================================
 // 2. SHOW LOGIN SCREEN
 // ==========================================
